@@ -8,14 +8,1155 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
-  /* Wigdor Intake Command Center — full styling moved to external mockup file */
-  /* This is a placeholder while the full v5 file is staged via direct API call */
-  body { font-family: 'Inter', system-ui, sans-serif; padding: 40px; background: #FAFAF7; color: #1A1A1A; }
-  h1 { font-family: 'Playfair Display', serif; }
+  :root {
+    --sf-blue:#032D60; --sf-blue-2:#014486; --sf-blue-3:#0B5CAB; --sf-link:#0176D3;
+    --sf-surface:#F3F3F3; --sf-border:#DDDBDA; --sf-border-2:#C9C7C5;
+    --sf-text:#181818; --sf-text-2:#3E3E3C; --sf-text-3:#706E6B;
+    --sf-card-bg:#FFFFFF; --sf-radius:0.25rem; --sf-utility-bg:#16325C; --sf-utility-2:#1B3A6E;
+    --sf-sans:'Salesforce Sans','Inter',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{margin:0;background:var(--sf-surface);font-family:var(--sf-sans);color:var(--sf-text);font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding-bottom:36px;}
+  .lex-header{background:var(--sf-blue);color:#FFF;height:50px;display:flex;align-items:center;padding:0 12px 0 8px;gap:12px;position:sticky;top:0;z-index:100;box-shadow:0 2px 4px rgba(0,0,0,0.12);}
+  .lex-header .waffle{width:36px;height:36px;border-radius:3px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 120ms;}
+  .lex-header .waffle:hover{background:rgba(255,255,255,0.14);}
+  .lex-header .waffle svg{width:18px;height:18px;}
+  .lex-header .app-name{display:flex;align-items:center;gap:10px;padding:0 14px 0 6px;border-right:1px solid rgba(255,255,255,0.18);height:34px;}
+  .lex-header .app-name .cloud-icon{width:26px;height:26px;background:#1589EE;border-radius:3px;display:flex;align-items:center;justify-content:center;}
+  .lex-header .app-name .cloud-icon svg{width:16px;height:16px;}
+  .lex-header .app-name .name{font-size:15px;font-weight:700;color:#FFF;letter-spacing:0.1px;}
+  .lex-header .nav-tabs{display:flex;align-items:stretch;height:50px;gap:0;flex:1;min-width:0;overflow:hidden;}
+  .lex-header .nav-tabs .lex-tab{color:rgba(255,255,255,0.92);font-size:13px;font-weight:400;padding:0 14px;display:flex;align-items:center;gap:6px;cursor:pointer;border-bottom:3px solid transparent;transition:background 120ms,border-color 120ms;white-space:nowrap;text-decoration:none;}
+  .lex-header .nav-tabs .lex-tab:hover{background:rgba(255,255,255,0.08);}
+  .lex-header .nav-tabs .lex-tab.active{background:rgba(255,255,255,0.10);border-bottom-color:#FFF;font-weight:600;}
+  .lex-header .nav-tabs .lex-tab .caret{font-size:9px;opacity:0.7;}
+  .lex-header .nav-tabs .lex-tab .pin{font-size:10px;opacity:0.6;margin-right:2px;}
+  .lex-header .header-right{display:flex;align-items:center;gap:4px;flex-shrink:0;}
+  .lex-header .lex-search{display:flex;align-items:center;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.10);border-radius:18px;padding:5px 12px 5px 30px;width:240px;height:32px;color:#FFF;font-size:12px;position:relative;cursor:text;}
+  .lex-header .lex-search::before{content:'';position:absolute;left:11px;top:50%;transform:translateY(-50%);width:11px;height:11px;border:1.6px solid rgba(255,255,255,0.85);border-radius:50%;}
+  .lex-header .lex-search::after{content:'';position:absolute;left:21px;top:19px;width:6px;height:1.6px;background:rgba(255,255,255,0.85);transform:rotate(45deg);transform-origin:0 0;}
+  .lex-header .lex-search .placeholder{color:rgba(255,255,255,0.78);}
+  .lex-header .h-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background 120ms;color:#FFF;}
+  .lex-header .h-icon:hover{background:rgba(255,255,255,0.14);}
+  .lex-header .h-icon svg{width:16px;height:16px;}
+  .lex-header .h-avatar{width:32px;height:32px;border-radius:50%;background:#C9A96E;color:#0A0A0A;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;margin-left:4px;border:2px solid rgba(255,255,255,0.20);}
+  .lex-page-header{background:#FFF;border-bottom:1px solid var(--sf-border);padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .lex-page-header .icon-tile{width:40px;height:40px;border-radius:4px;background:linear-gradient(180deg,#C9A96E 0%,#A8884E 100%);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:900;color:#0A0A0A;font-size:18px;flex-shrink:0;box-shadow:inset 0 -1px 0 rgba(0,0,0,0.10);}
+  .lex-page-header .ph-titles{min-width:0;flex:1;}
+  .lex-page-header .ph-eyebrow{font-size:11px;color:var(--sf-text-3);font-weight:400;letter-spacing:0.1px;}
+  .lex-page-header .ph-eyebrow .crumb{color:var(--sf-link);cursor:pointer;}
+  .lex-page-header .ph-eyebrow .crumb:hover{text-decoration:underline;}
+  .lex-page-header h1.ph-title{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:700;color:var(--sf-text);margin:2px 0 4px;line-height:1.15;letter-spacing:-0.1px;}
+  .lex-page-header .ph-meta-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--sf-text-3);}
+  .lex-page-header .ph-pill{display:inline-flex;align-items:center;gap:4px;background:var(--sf-surface);border:1px solid var(--sf-border);border-radius:12px;padding:2px 9px;font-size:11px;color:var(--sf-text-2);font-weight:500;}
+  .lex-page-header .ph-pill.live{background:#E5EFE6;border-color:#C7DDC9;color:#2F6B3A;}
+  .lex-page-header .ph-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+  .slds-btn{background:#FFF;border:1px solid var(--sf-border-2);color:var(--sf-link);padding:5px 12px;border-radius:var(--sf-radius);font-size:12px;font-weight:500;cursor:pointer;line-height:1.4;transition:background 120ms,border-color 120ms,color 120ms;display:inline-flex;align-items:center;gap:6px;font-family:inherit;}
+  .slds-btn:hover{background:#F4F6F9;border-color:var(--sf-link);}
+  .slds-btn svg{width:12px;height:12px;flex-shrink:0;}
+  .lex-app-page{padding:14px 16px;background:var(--sf-surface);min-height:calc(100vh - 50px - 78px - 36px);}
+  .lex-slot-pill{font-family:'SF Mono',Menlo,Consolas,monospace;font-size:10px;color:var(--sf-text-3);margin-bottom:6px;padding-left:4px;letter-spacing:0.1px;opacity:0.75;user-select:text;}
+  .lex-slot-pill .ang{color:#B0AFAD;}
+  .lex-slot-pill .tag{color:var(--sf-text-2);}
+  .lwc-card{background:var(--sf-card-bg);border:1px solid var(--sf-border);border-radius:var(--sf-radius);box-shadow:0 2px 2px rgba(0,0,0,0.04),0 0 1px rgba(0,0,0,0.06);overflow:hidden;position:relative;}
+  .lwc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#C9A96E 0%,#A8884E 100%);opacity:0.65;z-index:1;}
+  .lex-utility-bar{position:fixed;bottom:0;left:0;right:0;height:36px;background:var(--sf-utility-bg);color:#FFF;display:flex;align-items:center;padding:0 12px;z-index:95;box-shadow:0 -1px 4px rgba(0,0,0,0.18);font-size:12px;}
+  .lex-utility-bar .ub-item{display:flex;align-items:center;gap:6px;padding:0 12px;height:100%;border-right:1px solid rgba(255,255,255,0.10);cursor:pointer;transition:background 120ms;color:rgba(255,255,255,0.92);}
+  .lex-utility-bar .ub-item:hover{background:var(--sf-utility-2);}
+  .lex-utility-bar .ub-item:first-child{border-left:1px solid rgba(255,255,255,0.10);}
+  .lex-utility-bar .ub-item svg{width:13px;height:13px;}
+  .lex-utility-bar .ub-item .badge{background:#C9A96E;color:#0A0A0A;border-radius:9px;padding:1px 6px;font-size:10px;font-weight:700;margin-left:2px;}
+  .lex-utility-bar .ub-spacer{flex:1;}
+  .lex-utility-bar .ub-meta{font-size:10px;color:rgba(255,255,255,0.65);letter-spacing:0.2px;padding-right:8px;font-family:'SF Mono',Menlo,Consolas,monospace;}
+  @media print{body{background:white;padding-bottom:0;}.lex-header,.lex-page-header,.lex-utility-bar,.lex-slot-pill{display:none!important;}.lex-app-page{padding:0!important;min-height:auto;}.lwc-card{border:none!important;box-shadow:none!important;}.lwc-card::before{display:none!important;}}
+
+  .lwc-body{
+    --wig-black:#0A0A0A;--wig-charcoal:#1A1A1A;--wig-ink:#2A2A2A;--wig-warm-gray:#6B6B6B;--wig-mid-gray:#9A9A9A;--wig-light-gray:#DDDDDD;--wig-rule:#E5E0D6;--wig-cream:#FAFAF7;--wig-cream-2:#F5F2EC;--wig-cream-3:#EFEBE0;--wig-white:#FFFFFF;--wig-gold:#C9A96E;--wig-gold-dark:#A8884E;--wig-gold-light:#E8DCBE;--wig-crimson:#8B0000;--wig-crimson-soft:#F2E0E0;--wig-success:#2F6B3A;--wig-success-soft:#E5EFE6;--wig-warning:#B8842B;--wig-warning-soft:#F5EFDF;
+    --s-1:4px;--s-2:8px;--s-3:12px;--s-4:16px;--s-5:20px;--s-6:24px;--s-7:32px;--s-8:40px;--s-9:56px;
+    --serif:'Playfair Display',Georgia,'Times New Roman',serif;--sans:'Inter',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+    --shadow-1:0 1px 2px rgba(0,0,0,0.04);--shadow-2:0 2px 8px rgba(0,0,0,0.06);--shadow-drawer:-8px 0 32px rgba(0,0,0,0.18);
+    --t-fast:120ms cubic-bezier(.4,0,.2,1);--t-base:180ms cubic-bezier(.4,0,.2,1);--t-slow:280ms cubic-bezier(.4,0,.2,1);
+    background:var(--wig-cream);font-family:var(--sans);color:var(--wig-charcoal);font-size:14px;line-height:1.5;
+  }
+  .lwc-body ::selection{background:var(--wig-gold-light);color:var(--wig-black);}
+  .lwc-body :focus-visible{outline:2px solid var(--wig-gold);outline-offset:2px;border-radius:2px;}
+  .lwc-body button,.lwc-body select,.lwc-body input,.lwc-body a{font-family:inherit;}
+  .lwc-body .brandbar{background:var(--wig-black);color:var(--wig-white);display:flex;align-items:center;gap:var(--s-4);padding:12px var(--s-6);border-bottom:1px solid var(--wig-gold);position:relative;}
+  .lwc-body .brandbar .logo-block{display:flex;align-items:center;gap:var(--s-3);}
+  .lwc-body .brandbar svg.monogram{width:28px;height:28px;flex-shrink:0;}
+  .lwc-body .brandbar .wordmark{display:flex;flex-direction:column;gap:2px;line-height:1;}
+  .lwc-body .brandbar .wordmark .name{font-family:var(--serif);font-weight:900;font-size:16px;letter-spacing:4px;color:var(--wig-white);}
+  .lwc-body .brandbar .wordmark .eyebrow{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:500;color:var(--wig-gold);}
+  .lwc-body .brandbar .tagline{margin-left:var(--s-5);padding-left:var(--s-5);border-left:1px solid rgba(201,169,110,0.3);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--wig-mid-gray);font-weight:400;font-style:italic;font-family:var(--serif);}
+  .lwc-body .brandbar .spacer{flex:1;}
+  .lwc-body .brandbar .live-pill-int{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);color:var(--wig-white);font-size:10px;font-weight:600;padding:4px 10px;border-radius:2px;border:1px solid rgba(201,169,110,0.3);letter-spacing:0.3px;}
+  .lwc-body .brandbar .live-pill-int .dot{width:6px;height:6px;border-radius:50%;background:var(--wig-success);box-shadow:0 0 0 2px rgba(47,107,58,0.28);animation:pulse 2.6s infinite;}
+  .lwc-body .applnav{background:var(--wig-white);border-bottom:1px solid var(--wig-rule);padding:0 var(--s-6);display:flex;align-items:stretch;box-shadow:var(--shadow-1);position:sticky;top:50px;z-index:20;}
+  .lwc-body .applnav .applabel{display:flex;align-items:center;gap:10px;padding:12px 18px 12px 0;margin-right:var(--s-5);border-right:1px solid var(--wig-rule);font-family:var(--sans);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--wig-black);}
+  .lwc-body .applnav .applabel .glyph{width:22px;height:22px;border:1px solid var(--wig-gold);background:var(--wig-cream);color:var(--wig-black);display:inline-flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:900;font-size:13px;line-height:1;}
+  .lwc-body .applnav .nav-tab{background:transparent;border:none;padding:14px 18px;font-weight:600;font-size:13px;color:var(--wig-warm-gray);cursor:pointer;border-bottom:2px solid transparent;transition:color var(--t-fast),border-color var(--t-fast),background var(--t-fast);letter-spacing:0.4px;position:relative;}
+  .lwc-body .applnav .nav-tab .kbd{display:inline-block;margin-left:6px;font-size:9px;color:var(--wig-mid-gray);border:1px solid var(--wig-rule);padding:1px 4px;border-radius:2px;font-weight:500;font-family:var(--sans);}
+  .lwc-body .applnav .nav-tab:hover{color:var(--wig-black);background:var(--wig-cream);}
+  .lwc-body .applnav .nav-tab.active{color:var(--wig-black);border-bottom-color:var(--wig-gold);}
+  .lwc-body .applnav .nav-tab.active .kbd{color:var(--wig-gold-dark);border-color:var(--wig-gold);}
+  .lwc-body .applnav .spacer{flex:1;}
+  .lwc-body .applnav .nav-actions{display:flex;align-items:center;gap:var(--s-3);}
+  .lwc-body .live-pill{display:inline-flex;align-items:center;gap:6px;background:var(--wig-cream-2);color:var(--wig-charcoal);font-size:11px;font-weight:600;padding:5px 10px;border-radius:2px;border:1px solid var(--wig-rule);letter-spacing:0.3px;}
+  .lwc-body .live-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--wig-success);box-shadow:0 0 0 2px rgba(47,107,58,0.18);animation:pulse 2.6s infinite;}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 2px rgba(47,107,58,0.18);}50%{box-shadow:0 0 0 4px rgba(47,107,58,0.06);}}
+  .lwc-body .filter-pill{background:var(--wig-cream);color:var(--wig-charcoal);font-size:11px;font-weight:600;padding:5px 10px;border:1px solid var(--wig-gold);border-radius:2px;letter-spacing:0.3px;max-width:360px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lwc-body .icon-btn{background:var(--wig-white);border:1px solid var(--wig-rule);color:var(--wig-charcoal);padding:6px 10px;font-size:11px;font-weight:600;cursor:pointer;letter-spacing:0.5px;text-transform:uppercase;border-radius:2px;display:inline-flex;align-items:center;gap:6px;transition:all var(--t-fast);}
+  .lwc-body .icon-btn:hover{background:var(--wig-cream);border-color:var(--wig-gold);color:var(--wig-black);}
+  .lwc-body .icon-btn:active{transform:translateY(1px);}
+  .lwc-body .icon-btn .caret{font-size:9px;opacity:0.7;}
+  .lwc-body .menu{position:absolute;top:calc(100% + 4px);right:0;background:var(--wig-white);border:1px solid var(--wig-rule);box-shadow:var(--shadow-2);min-width:220px;padding:6px 0;z-index:50;display:none;}
+  .lwc-body .menu.open{display:block;}
+  .lwc-body .menu .menu-header{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--wig-warm-gray);padding:8px 14px 4px;border-top:1px solid var(--wig-rule);margin-top:4px;}
+  .lwc-body .menu .menu-header:first-child{border-top:none;margin-top:0;}
+  .lwc-body .menu .menu-item{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;font-size:13px;color:var(--wig-charcoal);cursor:pointer;transition:background var(--t-fast);border:none;background:none;width:100%;text-align:left;font-weight:500;}
+  .lwc-body .menu .menu-item:hover{background:var(--wig-cream);}
+  .lwc-body .menu .menu-item .kbd{font-size:10px;color:var(--wig-mid-gray);border:1px solid var(--wig-rule);padding:1px 5px;border-radius:2px;}
+  .lwc-body .menu .menu-item.danger{color:var(--wig-crimson);}
+  .lwc-body .menu-anchor{position:relative;}
+  .lwc-body .page-head{padding:var(--s-6) var(--s-6) var(--s-3);display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s-6);flex-wrap:wrap;}
+  .lwc-body .page-head .lead{min-width:0;}
+  .lwc-body .page-head .breadcrumb{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--wig-warm-gray);font-weight:600;margin-bottom:var(--s-2);}
+  .lwc-body .page-head .breadcrumb .sep{margin:0 8px;color:var(--wig-gold);}
+  .lwc-body .page-head h1{font-family:var(--serif);color:var(--wig-black);font-size:32px;font-weight:700;margin:0 0 var(--s-2);letter-spacing:-0.4px;line-height:1.05;}
+  .lwc-body .page-head h1::after{content:'';display:block;width:60px;height:2px;background:var(--wig-gold);margin-top:var(--s-3);}
+  .lwc-body .page-head .sub{color:var(--wig-warm-gray);font-size:13px;display:flex;align-items:center;gap:var(--s-4);margin-top:var(--s-3);flex-wrap:wrap;}
+  .lwc-body .page-head .sub a{color:var(--wig-charcoal);text-decoration:none;font-weight:600;border-bottom:1px dotted var(--wig-gold);padding-bottom:1px;transition:color var(--t-fast);}
+  .lwc-body .page-head .sub a:hover{color:var(--wig-gold-dark);border-bottom-style:solid;}
+  .lwc-body .page-head .meta{display:flex;align-items:center;gap:var(--s-3);font-size:12px;color:var(--wig-warm-gray);}
+  .lwc-body .help-btn{width:26px;height:26px;border-radius:50%;border:1px solid var(--wig-rule);background:var(--wig-white);color:var(--wig-charcoal);font-family:var(--serif);font-weight:700;font-size:13px;cursor:pointer;transition:all var(--t-fast);}
+  .lwc-body .help-btn:hover{border-color:var(--wig-gold);color:var(--wig-black);background:var(--wig-cream);}
+  .lwc-body .view{display:none;padding:var(--s-2) var(--s-6) var(--s-7);animation:fadein .25s ease;}
+  .lwc-body .view.active{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+  .lwc-body .arch-banner{background:var(--wig-cream-2);border-top:1px solid var(--wig-gold);border-bottom:1px solid var(--wig-rule);padding:var(--s-4) var(--s-6);display:flex;gap:var(--s-6);font-size:13px;line-height:1.6;color:var(--wig-charcoal);}
+  .lwc-body .arch-banner .col{flex:1;min-width:0;}
+  .lwc-body .arch-banner .eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:2px;font-weight:700;color:var(--wig-gold-dark);margin-bottom:4px;}
+  .lwc-body .arch-banner .col strong{font-family:var(--serif);color:var(--wig-black);display:block;font-size:14px;font-weight:700;margin-bottom:3px;letter-spacing:0.2px;}
+  .lwc-body .section-head{margin:var(--s-7) 0 var(--s-4);padding-top:var(--s-3);border-top:1px solid var(--wig-rule);position:relative;}
+  .lwc-body .section-head::before{content:'';position:absolute;top:-1px;left:0;width:48px;height:2px;background:var(--wig-gold);}
+  .lwc-body .section-head .eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--wig-warm-gray);font-weight:700;margin-top:var(--s-2);}
+  .lwc-body .section-head h2{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--wig-black);margin:4px 0 0;letter-spacing:-0.2px;}
+  .lwc-body .filterbar{background:var(--wig-white);border:1px solid var(--wig-rule);border-radius:3px;padding:var(--s-4) var(--s-5);display:flex;gap:var(--s-4);flex-wrap:wrap;align-items:end;margin-bottom:var(--s-3);box-shadow:var(--shadow-1);}
+  .lwc-body .filter{display:flex;flex-direction:column;gap:4px;min-width:160px;}
+  .lwc-body .filter label{font-size:10px;font-weight:700;color:var(--wig-warm-gray);text-transform:uppercase;letter-spacing:1.2px;}
+  .lwc-body .filter select,.lwc-body .filter input{padding:8px 10px;border:1px solid var(--wig-rule);border-radius:2px;font-family:var(--sans);font-size:13px;background:var(--wig-white);color:var(--wig-charcoal);transition:border-color var(--t-fast),box-shadow var(--t-fast);}
+  .lwc-body .filter select:hover,.lwc-body .filter input:hover{border-color:var(--wig-gold);}
+  .lwc-body .filter select:focus,.lwc-body .filter input:focus{border-color:var(--wig-gold);box-shadow:0 0 0 2px rgba(201,169,110,0.18);outline:none;}
+  .lwc-body .filter-search{position:relative;min-width:180px;}
+  .lwc-body .filter-search input{width:100%;padding-left:28px;}
+  .lwc-body .filter-search::before{content:'';position:absolute;left:9px;bottom:12px;width:12px;height:12px;border:1.4px solid var(--wig-warm-gray);border-radius:50%;}
+  .lwc-body .filter-search::after{content:'';position:absolute;left:18px;bottom:8px;width:6px;height:1.4px;background:var(--wig-warm-gray);transform:rotate(45deg);transform-origin:0 0;}
+  .lwc-body .reset-btn,.lwc-body .preset-btn{background:var(--wig-white);border:1px solid var(--wig-charcoal);color:var(--wig-charcoal);padding:9px 14px;border-radius:2px;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;transition:all var(--t-fast);}
+  .lwc-body .preset-btn{border-color:var(--wig-gold);color:var(--wig-gold-dark);}
+  .lwc-body .reset-btn:hover{background:var(--wig-black);color:var(--wig-white);}
+  .lwc-body .preset-btn:hover{background:var(--wig-gold);color:var(--wig-black);border-color:var(--wig-gold);}
+  .lwc-body .shared-pill{align-self:center;background:var(--wig-cream);color:var(--wig-charcoal);font-size:10px;padding:5px 10px;border-radius:2px;margin-left:auto;border:1px dashed var(--wig-warm-gray);letter-spacing:0.5px;text-transform:uppercase;font-weight:600;}
+  .lwc-body .shared-pill strong{color:var(--wig-gold-dark);font-weight:700;}
+  .lwc-body .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:var(--s-3);min-height:24px;align-items:center;}
+  .lwc-body .chip-row.empty{display:none;}
+  .lwc-body .chip-row .chip-label{font-size:10px;text-transform:uppercase;color:var(--wig-warm-gray);letter-spacing:1.2px;font-weight:700;margin-right:4px;}
+  .lwc-body .chip{display:inline-flex;align-items:center;gap:6px;background:var(--wig-cream-2);border:1px solid var(--wig-rule);border-left:2px solid var(--wig-gold);color:var(--wig-charcoal);font-size:11px;font-weight:600;padding:4px 6px 4px 10px;border-radius:2px;letter-spacing:0.2px;}
+  .lwc-body .chip .x{width:14px;height:14px;border-radius:50%;border:none;background:transparent;color:var(--wig-warm-gray);cursor:pointer;font-size:13px;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:all var(--t-fast);font-weight:700;}
+  .lwc-body .chip .x:hover{background:var(--wig-crimson);color:var(--wig-white);}
+  .lwc-body .lifecycle{background:var(--wig-white);border:1px solid var(--wig-rule);border-radius:3px;padding:var(--s-5) var(--s-5) var(--s-4);margin-bottom:var(--s-4);box-shadow:var(--shadow-1);}
+  .lwc-body .lifecycle h3{font-family:var(--serif);color:var(--wig-black);font-size:17px;margin:0 0 4px;display:flex;justify-content:space-between;align-items:center;font-weight:700;letter-spacing:0.1px;}
+  .lwc-body .lifecycle .sub{font-size:12px;color:var(--wig-warm-gray);margin-bottom:var(--s-4);}
+  .lwc-body .lifecycle .lc-row{display:flex;gap:0;align-items:stretch;}
+  .lwc-body .lc-stage{flex:1;background:var(--wig-cream);padding:14px 8px;text-align:center;border-right:1px solid var(--wig-white);position:relative;cursor:pointer;transition:background var(--t-fast),transform var(--t-fast);min-width:80px;}
+  .lwc-body .lc-stage:hover{background:var(--wig-cream-2);}
+  .lwc-body .lc-stage:active{transform:translateY(1px);}
+  .lwc-body .lc-stage:first-child{border-radius:3px 0 0 3px;}
+  .lwc-body .lc-stage:last-child{border-radius:0 3px 3px 0;border-right:none;}
+  .lwc-body .lc-stage .lc-label{font-size:9px;text-transform:uppercase;letter-spacing:0.8px;font-weight:700;color:var(--wig-warm-gray);margin-bottom:4px;}
+  .lwc-body .lc-stage .lc-value{font-family:var(--serif);font-weight:700;font-size:26px;color:var(--wig-black);line-height:1;font-variant-numeric:tabular-nums;}
+  .lwc-body .lc-stage .lc-meta{font-size:10px;color:var(--wig-warm-gray);margin-top:4px;}
+  .lwc-body .lc-stage.op{background:var(--wig-cream-2);}
+  .lwc-body .lc-stage.op .lc-label{color:var(--wig-charcoal);}
+  .lwc-body .lc-fork{display:flex;flex-direction:column;gap:3px;flex:0.6;}
+  .lwc-body .lc-fork .lc-stage{padding:8px 8px;}
+  .lwc-body .lc-fork .lc-stage .lc-value{font-size:17px;}
+  .lwc-body .lc-stage.out{background:var(--wig-white);border:1px solid var(--wig-rule);}
+  .lwc-body .lc-stage.gold{background:var(--wig-gold);}
+  .lwc-body .lc-stage.gold .lc-label{color:var(--wig-black);opacity:0.85;}
+  .lwc-body .lc-stage.gold .lc-value{color:var(--wig-black);}
+  .lwc-body .lc-stage.dark{background:var(--wig-black);}
+  .lwc-body .lc-stage.dark .lc-label{color:var(--wig-white);opacity:0.85;}
+  .lwc-body .lc-stage.dark .lc-value{color:var(--wig-white);}
+  .lwc-body .lc-stage.muted .lc-value{color:var(--wig-warm-gray);}
+  .lwc-body .lc-arrow{display:flex;align-items:center;justify-content:center;width:16px;color:var(--wig-mid-gray);font-size:16px;flex-shrink:0;}
+  .lwc-body .lc-section-label{font-size:10px;color:var(--wig-warm-gray);text-transform:uppercase;font-weight:700;letter-spacing:0.8px;padding:0 4px;}
+  .lwc-body .lc-jump{font-size:11px;color:var(--wig-charcoal);font-weight:600;cursor:pointer;border-bottom:1px dotted var(--wig-gold);padding-bottom:1px;background:none;border-top:none;border-left:none;border-right:none;transition:color var(--t-fast);}
+  .lwc-body .lc-jump:hover{color:var(--wig-gold-dark);border-bottom-style:solid;}
+  .lwc-body .pull-quote{background:var(--wig-white);border:1px solid var(--wig-rule);border-left:4px solid var(--wig-gold);padding:var(--s-4) var(--s-6) var(--s-4) var(--s-5);margin-bottom:var(--s-4);display:flex;align-items:center;gap:var(--s-5);box-shadow:var(--shadow-1);}
+  .lwc-body .insight-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-3);margin-bottom:var(--s-4);}
+  .lwc-body .insight{background:var(--wig-white);border:1px solid var(--wig-rule);border-radius:3px;padding:var(--s-3) var(--s-5);display:flex;gap:var(--s-3);box-shadow:var(--shadow-1);transition:border-color var(--t-fast),box-shadow var(--t-fast);}
+  .lwc-body .insight:hover{border-color:var(--wig-gold);box-shadow:var(--shadow-2);}
+  .lwc-body .insight .badge{background:var(--wig-cream-2);color:var(--wig-black);font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:1.2px;padding:4px 8px;border-radius:2px;flex-shrink:0;height:fit-content;}
+  .lwc-body .insight.win .badge{background:var(--wig-success-soft);color:var(--wig-success);}
+  .lwc-body .insight.warn .badge{background:var(--wig-warning-soft);color:var(--wig-warning);}
+  .lwc-body .insight.alert .badge{background:var(--wig-crimson-soft);color:var(--wig-crimson);}
+  .lwc-body .insight .body{font-size:13px;line-height:1.55;color:var(--wig-charcoal);}
+  .lwc-body .insight .body strong{font-family:var(--serif);color:var(--wig-black);font-weight:700;}
+  .lwc-body .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-3);margin-bottom:var(--s-4);}
+  .lwc-body .kpi{background:var(--wig-white);border:1px solid var(--wig-rule);border-left:3px solid var(--wig-black);border-radius:3px;padding:var(--s-5) var(--s-5) var(--s-4);box-shadow:var(--shadow-1);position:relative;transition:border-color var(--t-fast),box-shadow var(--t-fast);}
+  .lwc-body .kpi:hover{box-shadow:var(--shadow-2);}
+  .lwc-body .kpi .label{font-size:10px;text-transform:uppercase;color:var(--wig-warm-gray);font-weight:700;letter-spacing:1.4px;margin-bottom:var(--s-2);display:flex;align-items:center;gap:6px;}
+  .lwc-body .kpi .info-i{width:13px;height:13px;border-radius:50%;border:1px solid var(--wig-rule);color:var(--wig-warm-gray);font-size:9px;line-height:1;display:inline-flex;align-items:center;justify-content:center;cursor:help;font-weight:700;font-family:var(--serif);}
+  .lwc-body .kpi .info-i:hover{border-color:var(--wig-gold);color:var(--wig-gold-dark);}
+  .lwc-body .kpi .value{font-family:var(--serif);font-weight:700;font-size:36px;color:var(--wig-black);line-height:1;letter-spacing:-0.6px;font-variant-numeric:tabular-nums;}
+  .lwc-body .kpi .compare{display:flex;gap:6px;margin-top:10px;font-size:12px;align-items:baseline;flex-wrap:wrap;}
+  .lwc-body .kpi .delta{font-weight:700;font-variant-numeric:tabular-nums;}
+  .lwc-body .kpi .delta.up{color:var(--wig-success);}
+  .lwc-body .kpi .delta.down{color:var(--wig-crimson);}
+  .lwc-body .kpi .prior{color:var(--wig-warm-gray);font-size:12px;}
+  .lwc-body .kpi.gold-edge{border-left-color:var(--wig-gold);}
+  .lwc-body .kpi.green-edge{border-left-color:var(--wig-success);}
+  .lwc-body .kpi.dark-edge{border-left-color:var(--wig-charcoal);}
+  .lwc-body .kpi.amber-edge{border-left-color:var(--wig-warning);}
+  .lwc-body .kpi.crimson-edge{border-left-color:var(--wig-crimson);}
+  .lwc-body .kpi .spark{position:absolute;top:12px;right:12px;width:88px;height:32px;}
+  .lwc-body .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:var(--s-4);}
+  .lwc-body .grid-perf{display:grid;grid-template-columns:1.4fr 1fr;gap:var(--s-4);}
+  .lwc-body .card{background:var(--wig-white);border:1px solid var(--wig-rule);border-radius:3px;padding:var(--s-5);box-shadow:var(--shadow-1);margin-bottom:var(--s-4);transition:box-shadow var(--t-fast);}
+  .lwc-body .card:hover{box-shadow:var(--shadow-2);}
+  .lwc-body .card h3{font-family:var(--serif);color:var(--wig-black);font-size:17px;margin:0 0 4px;display:flex;justify-content:space-between;align-items:center;font-weight:700;letter-spacing:0.1px;}
+  .lwc-body .card .sub{font-size:12px;color:var(--wig-warm-gray);margin-bottom:var(--s-3);line-height:1.5;}
+  .lwc-body .card .chart-wrap{position:relative;height:240px;}
+  .lwc-body .card .chart-wrap.tall{height:320px;}
+  .lwc-body .card .chart-wrap.short{height:180px;}
+  .lwc-body .card .badge-count{background:var(--wig-cream-2);color:var(--wig-charcoal);font-weight:600;font-size:11px;padding:3px 9px;border-radius:2px;letter-spacing:0.4px;font-variant-numeric:tabular-nums;}
+  .lwc-body .card .badge-count.amber{background:var(--wig-warning-soft);color:var(--wig-warning);}
+  .lwc-body .card .badge-count.red{background:var(--wig-crimson-soft);color:var(--wig-crimson);}
+  .lwc-body .data-table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;}
+  .lwc-body .data-table th,.lwc-body .data-table td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--wig-rule);}
+  .lwc-body .data-table thead tr{border-bottom:1px solid var(--wig-gold);}
+  .lwc-body .data-table th{background:var(--wig-cream);color:var(--wig-charcoal);font-weight:700;font-size:9px;text-transform:uppercase;letter-spacing:1.2px;}
+  .lwc-body .data-table td.num{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;}
+  .lwc-body .data-table td.id{color:var(--wig-charcoal);font-weight:700;letter-spacing:0.3px;font-family:'SF Mono','Menlo','Consolas',monospace;font-size:12px;}
+  .lwc-body .data-table tbody tr{cursor:pointer;transition:background var(--t-fast);}
+  .lwc-body .data-table tbody tr:hover{background:var(--wig-cream-2);}
+  .lwc-body .data-table .stale{color:var(--wig-crimson);font-weight:700;}
+  .lwc-body .data-table .warn{color:var(--wig-warning);font-weight:700;}
+  .lwc-body .data-table .ok{color:var(--wig-success);font-weight:700;}
+  .lwc-body .pill{display:inline-block;padding:2px 9px;border-radius:2px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;}
+  .lwc-body .pill.partner{background:var(--wig-cream);color:var(--wig-charcoal);border:1px solid var(--wig-rule);}
+  .lwc-body .pill.attorney{background:var(--wig-warning-soft);color:var(--wig-gold-dark);}
+  .lwc-body .pill.admin{background:#F0F0F0;color:var(--wig-charcoal);}
+  .lwc-body .pill.pending{background:var(--wig-crimson-soft);color:var(--wig-crimson);}
+  .lwc-body .empty-state{text-align:center;padding:var(--s-7) var(--s-4);color:var(--wig-warm-gray);font-size:13px;}
+  .lwc-body .empty-state .glyph{width:48px;height:48px;margin:0 auto var(--s-3);border:1px solid var(--wig-rule);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--wig-mid-gray);font-family:var(--serif);font-size:22px;font-weight:700;}
+  .lwc-body .empty-state .title{font-family:var(--serif);color:var(--wig-black);font-size:16px;font-weight:700;margin-bottom:4px;}
+  .lwc-body .empty-state .hint{margin-bottom:var(--s-3);}
+  .lwc-body .empty-state .reset-btn{display:inline-block;}
+  .lwc-body .skel{background:linear-gradient(90deg,var(--wig-cream-2) 0%,var(--wig-cream-3) 50%,var(--wig-cream-2) 100%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:2px;color:transparent!important;pointer-events:none;user-select:none;}
+  .lwc-body .skel *{visibility:hidden;}
+  @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+  .lwc-body .funnel-row{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr;gap:0;margin-bottom:var(--s-3);}
+  .lwc-body .funnel-stage{padding:24px 22px;border:1px solid var(--wig-rule);border-right:none;position:relative;text-align:center;transition:transform var(--t-fast);}
+  .lwc-body .funnel-stage:hover{transform:translateY(-1px);}
+  .lwc-body .funnel-stage:first-child{border-radius:3px 0 0 3px;background:var(--wig-black);color:var(--wig-white);}
+  .lwc-body .funnel-stage:nth-child(2){background:var(--wig-charcoal);color:var(--wig-white);}
+  .lwc-body .funnel-stage:nth-child(3){background:var(--wig-warm-gray);color:var(--wig-white);}
+  .lwc-body .funnel-stage:last-child{background:var(--wig-gold);color:var(--wig-black);border-right:1px solid var(--wig-rule);border-radius:0 3px 3px 0;}
+  .lwc-body .funnel-stage .stage-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;opacity:0.95;margin-bottom:10px;}
+  .lwc-body .funnel-stage .stage-value{font-family:var(--serif);font-weight:700;font-size:44px;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;}
+  .lwc-body .funnel-stage .stage-meta{font-size:11px;margin-top:8px;opacity:0.85;}
+  .lwc-body .funnel-stage .arrow{position:absolute;top:50%;right:-14px;transform:translateY(-50%);width:0;height:0;border-left:14px solid var(--wig-warm-gray);border-top:28px solid transparent;border-bottom:28px solid transparent;z-index:2;}
+  .lwc-body .funnel-stage:first-child .arrow{border-left-color:var(--wig-black);}
+  .lwc-body .funnel-stage:nth-child(2) .arrow{border-left-color:var(--wig-charcoal);}
+  .lwc-body .funnel-stage:nth-child(3) .arrow{border-left-color:var(--wig-warm-gray);}
+  .lwc-body .conv-row{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr;gap:0;padding-top:6px;}
+  .lwc-body .conv-cell{text-align:center;padding:4px 0;font-size:10px;color:var(--wig-warm-gray);text-transform:uppercase;letter-spacing:1px;font-weight:700;}
+  .lwc-body .conv-cell .pct{color:var(--wig-black);font-family:var(--serif);font-size:22px;font-weight:700;text-transform:none;margin-top:4px;display:block;letter-spacing:-0.3px;font-variant-numeric:tabular-nums;}
+  .lwc-body .mode-chips{display:inline-flex;background:var(--wig-cream);border-radius:2px;padding:3px;border:1px solid var(--wig-rule);}
+  .lwc-body .mode-chips button{background:transparent;border:none;padding:9px 18px;font-weight:600;font-size:11px;color:var(--wig-warm-gray);cursor:pointer;border-radius:2px;letter-spacing:0.6px;text-transform:uppercase;transition:all var(--t-fast);}
+  .lwc-body .mode-chips button:hover{color:var(--wig-black);}
+  .lwc-body .mode-chips button.active{background:var(--wig-black);color:var(--wig-white);}
+  .lwc-body .mode-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--s-4);}
+  .lwc-body .notes{background:var(--wig-white);border:1px solid var(--wig-rule);border-left:3px solid var(--wig-gold);border-radius:3px;padding:var(--s-4) var(--s-5);margin-top:var(--s-5);font-size:13px;line-height:1.6;color:var(--wig-charcoal);}
+  .lwc-body .notes strong{font-family:var(--serif);color:var(--wig-black);display:block;margin-bottom:6px;font-size:12px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;}
+  .scrim{position:fixed;inset:0;background:rgba(10,10,10,0.42);z-index:80;opacity:0;pointer-events:none;transition:opacity 180ms cubic-bezier(.4,0,.2,1);}
+  .scrim.open{opacity:1;pointer-events:auto;}
+  .drawer{position:fixed;top:0;right:0;height:100vh;width:460px;max-width:100vw;background:#FAFAF7;box-shadow:-8px 0 32px rgba(0,0,0,0.18);z-index:90;transform:translateX(100%);transition:transform 280ms cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;border-left:1px solid #C9A96E;font-family:'Inter',system-ui,sans-serif;color:#1A1A1A;}
+  .drawer.open{transform:translateX(0);}
+  .drawer .dr-head{padding:20px 24px 16px;background:#0A0A0A;color:#FFF;border-bottom:1px solid #C9A96E;}
+  .drawer .dr-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#C9A96E;font-weight:700;margin-bottom:4px;}
+  .drawer .dr-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;margin:0 0 6px;letter-spacing:0.2px;}
+  .drawer .dr-id{font-family:'SF Mono','Menlo','Consolas',monospace;font-size:12px;color:#9A9A9A;letter-spacing:0.4px;}
+  .drawer .dr-id a{color:#C9A96E;margin-left:8px;text-decoration:underline dotted;}
+  .drawer .dr-close{position:absolute;top:14px;right:14px;width:30px;height:30px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:#FFF;cursor:pointer;border-radius:50%;font-size:16px;line-height:1;transition:all 120ms;}
+  .drawer .dr-close:hover{background:#C9A96E;color:#0A0A0A;border-color:#C9A96E;}
+  .drawer .dr-body{flex:1;overflow-y:auto;padding:20px 24px;}
+  .drawer .dr-section{margin-bottom:24px;}
+  .drawer .dr-section .label{font-size:9px;text-transform:uppercase;letter-spacing:2px;color:#6B6B6B;font-weight:700;margin-bottom:8px;border-bottom:1px solid #E5E0D6;padding-bottom:4px;}
+  .drawer .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;}
+  .drawer .field-grid .k{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#6B6B6B;font-weight:600;margin-bottom:2px;}
+  .drawer .field-grid .v{font-weight:600;color:#1A1A1A;}
+  .drawer .activity{list-style:none;padding:0;margin:0;}
+  .drawer .activity li{padding:8px 0;border-bottom:1px solid #E5E0D6;font-size:13px;}
+  .drawer .activity li:last-child{border-bottom:none;}
+  .drawer .activity .when{font-size:11px;color:#6B6B6B;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.8px;}
+  .drawer .activity .what{color:#1A1A1A;}
+  .drawer .activity .what strong{font-family:'Playfair Display',Georgia,serif;}
+  .drawer .dr-foot{padding:12px 24px;border-top:1px solid #E5E0D6;background:#FFF;display:flex;gap:12px;}
+  .drawer .dr-foot .btn{flex:1;padding:10px 14px;background:#FFF;border:1px solid #1A1A1A;color:#1A1A1A;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;border-radius:2px;transition:all 120ms;font-family:inherit;}
+  .drawer .dr-foot .btn:hover{background:#0A0A0A;color:#FFF;}
+  .drawer .dr-foot .btn.primary{background:#0A0A0A;color:#FFF;}
+  .drawer .dr-foot .btn.primary:hover{background:#C9A96E;color:#0A0A0A;border-color:#C9A96E;}
+  .toast-stack{position:fixed;bottom:60px;right:24px;z-index:200;display:flex;flex-direction:column;gap:8px;max-width:360px;}
+  .toast{background:#0A0A0A;color:#FFF;padding:12px 16px;border-left:3px solid #C9A96E;border-radius:2px;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,0.10);animation:toastin .25s ease;display:flex;gap:10px;align-items:flex-start;font-family:'Inter',system-ui,sans-serif;}
+  .toast .label{font-family:'Playfair Display',Georgia,serif;font-weight:700;color:#C9A96E;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;line-height:1.4;}
+  .toast .body{color:#FFF;line-height:1.4;}
+  @keyframes toastin{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:none;}}
+  .shortcut-overlay{position:fixed;inset:0;z-index:110;background:rgba(10,10,10,0.65);display:none;align-items:center;justify-content:center;}
+  .shortcut-overlay.open{display:flex;}
+  .shortcut-card{background:#FAFAF7;border:1px solid #C9A96E;width:460px;max-width:92vw;padding:24px;box-shadow:0 2px 8px rgba(0,0,0,0.10);font-family:'Inter',system-ui,sans-serif;color:#1A1A1A;}
+  .shortcut-card h2{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;margin:0 0 4px;color:#0A0A0A;}
+  .shortcut-card .eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#A8884E;font-weight:700;margin-bottom:12px;}
+  .shortcut-card ul{list-style:none;padding:0;margin:0;}
+  .shortcut-card li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E5E0D6;font-size:13px;}
+  .shortcut-card li:last-child{border-bottom:none;}
+  .shortcut-card kbd{background:#FFF;border:1px solid #E5E0D6;padding:2px 8px;font-size:11px;font-family:'SF Mono',monospace;color:#1A1A1A;border-radius:2px;font-weight:600;}
+  .shortcut-card .closebar{margin-top:16px;padding-top:12px;border-top:1px solid #C9A96E;font-size:11px;color:#6B6B6B;text-align:center;text-transform:uppercase;letter-spacing:1.4px;}
+  .lwc-body .comp-foot{background:var(--wig-cream-2);color:var(--wig-warm-gray);padding:8px var(--s-6);font-size:10px;letter-spacing:1.4px;text-transform:uppercase;border-top:1px solid var(--wig-rule);display:flex;justify-content:space-between;align-items:center;gap:var(--s-3);flex-wrap:wrap;}
+  .lwc-body .comp-foot .left .name{font-family:var(--serif);color:var(--wig-black);font-weight:700;letter-spacing:2.5px;margin-right:10px;}
+  .lwc-body .comp-foot .right .gold{color:var(--wig-gold-dark);}
+  @media (max-width:1100px){.lwc-body .kpi-row,.lwc-body .insight-strip{grid-template-columns:1fr 1fr;}.lwc-body .grid-2,.lwc-body .grid-perf{grid-template-columns:1fr;}.lwc-body .funnel-row,.lwc-body .conv-row{grid-template-columns:1fr 1fr;}.lwc-body .lifecycle .lc-row{flex-wrap:wrap;}.lwc-body .lc-stage{min-width:90px;}.lwc-body .arch-banner{flex-direction:column;gap:var(--s-3);}.lex-header .lex-search{width:160px;}}
 </style>
 </head>
 <body>
-<h1>Wigdor Intake Command Center</h1>
-<p>Loading the full v5 mockup. If you see this placeholder, the deployment is pending the larger asset push.</p>
+<header class="lex-header" role="banner">
+  <div class="waffle" title="App Launcher" aria-label="App Launcher"><svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g fill="#FFFFFF"><rect x="1" y="1" width="3" height="3" rx="0.5"/><rect x="7" y="1" width="3" height="3" rx="0.5"/><rect x="13" y="1" width="3" height="3" rx="0.5"/><rect x="1" y="7" width="3" height="3" rx="0.5"/><rect x="7" y="7" width="3" height="3" rx="0.5"/><rect x="13" y="7" width="3" height="3" rx="0.5"/><rect x="1" y="13" width="3" height="3" rx="0.5"/><rect x="7" y="13" width="3" height="3" rx="0.5"/><rect x="13" y="13" width="3" height="3" rx="0.5"/></g></svg></div>
+  <div class="app-name"><div class="cloud-icon" aria-hidden="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#FFFFFF" d="M19 13.5c0-2.5-2-4.5-4.5-4.5h-.4C13.4 6.9 11.4 5.5 9 5.5c-3 0-5.5 2.5-5.5 5.5 0 .3 0 .6.1.9C2 12.5 1 14 1 15.7 1 17.9 2.8 19.7 5 19.7h13.5c2.2 0 4-1.8 4-4 0-1.6-.9-3-2.5-3.7v1.5z"/></svg></div><span class="name">CaseCloud</span></div>
+  <nav class="nav-tabs" role="navigation" aria-label="App tabs">
+    <a class="lex-tab" href="#"><span>Home</span></a>
+    <a class="lex-tab" href="#"><span>Matters</span><span class="caret">&#9662;</span></a>
+    <a class="lex-tab" href="#"><span>Contacts</span><span class="caret">&#9662;</span></a>
+    <a class="lex-tab" href="#"><span>Tasks</span></a>
+    <a class="lex-tab" href="#"><span>Reports</span></a>
+    <a class="lex-tab" href="#"><span>Dashboards</span></a>
+    <a class="lex-tab active" href="#"><span class="pin">&#128204;</span><span>Intake Command Center</span></a>
+    <a class="lex-tab" href="#"><span>More</span><span class="caret">&#9662;</span></a>
+  </nav>
+  <div class="header-right">
+    <div class="lex-search" role="search" aria-label="Search"><span class="placeholder">Search...</span></div>
+    <div class="h-icon" title="Favorites"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#FFFFFF"><path d="M13 2L4 14h7l-2 8 11-14h-7l2-6z"/></svg></div>
+    <div class="h-icon" title="Notifications"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+    <div class="h-icon" title="Setup"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+    <div class="h-avatar" title="Jason Adams">JA</div>
+  </div>
+</header>
+<div class="lex-page-header" role="region" aria-label="Page header">
+  <div class="icon-tile" aria-hidden="true">W</div>
+  <div class="ph-titles">
+    <div class="ph-eyebrow"><span class="crumb">CaseCloud</span> &rsaquo; <span class="crumb">Wigdor LLP</span> &rsaquo; Intake Command Center</div>
+    <h1 class="ph-title">Intake Command Center</h1>
+    <div class="ph-meta-row">
+      <span>Lightning App Page</span><span>&middot;</span><span>Wigdor LLP Production</span>
+      <span class="ph-pill">App Page</span>
+      <span class="ph-pill">API Name: Wigdor_Intake_Command_Center</span>
+      <span class="ph-pill">Created by ACS</span>
+      <span class="ph-pill live"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#2F6B3A;margin-right:4px;"></span>Active</span>
+    </div>
+  </div>
+  <div class="ph-actions">
+    <button class="slds-btn" onclick="showToast('Edit Page','Lightning App Builder would open here in production.')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit Page</button>
+    <button class="slds-btn" onclick="showToast('Help','Help for this page would open in a side panel.')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Help for this Page</button>
+    <button class="slds-btn" onclick="showToast('Refresh','Component refresh requested.')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>Refresh</button>
+  </div>
+</div>
+<main class="lex-app-page">
+  <div class="lex-slot-pill" aria-hidden="true"><span class="ang">&lt;</span><span class="tag">lightning-app-page</span><span class="ang">&gt;</span> &nbsp;&rsaquo;&nbsp; <span class="ang">&lt;</span><span class="tag">c-wigdor-intake-command-center</span><span class="ang"> /&gt;</span></div>
+  <article class="lwc-card" aria-label="Wigdor Intake Command Center component">
+    <div class="lwc-body">
+      <div class="brandbar" role="banner">
+        <div class="logo-block">
+          <svg class="monogram" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect x="1.5" y="1.5" width="29" height="29" fill="none" stroke="#C9A96E" stroke-width="1"/><text x="16" y="22" text-anchor="middle" font-family="Playfair Display, Georgia, serif" font-weight="900" font-size="18" fill="#C9A96E" letter-spacing="0.5">W</text></svg>
+          <div class="wordmark"><span class="name">WIGDOR LLP</span><span class="eyebrow">Intake Command Center</span></div>
+        </div>
+        <div class="tagline">Tenacity &middot; Empowerment &middot; Accountability</div>
+        <div class="spacer"></div>
+        <span class="live-pill-int" id="live-pill" aria-live="polite"><span class="dot"></span>Live &middot; Updated <span id="live-mins">2</span> min ago</span>
+      </div>
+      <nav class="applnav" role="navigation" aria-label="Primary views">
+        <div class="applabel"><span class="glyph">W</span><span>Intake Command Center</span></div>
+        <button class="nav-tab active" data-view="pipeline">Pipeline<span class="kbd">1</span></button>
+        <button class="nav-tab" data-view="dashboard">Dashboard<span class="kbd">2</span></button>
+        <button class="nav-tab" data-view="performance">Performance<span class="kbd">3</span></button>
+        <span class="spacer"></span>
+        <div class="nav-actions">
+          <span class="filter-pill" id="filter-pill">Filters: All partners &middot; All attorneys &middot; Last 12 mo</span>
+          <div class="menu-anchor">
+            <button class="icon-btn" id="saved-views-btn" aria-haspopup="true" aria-expanded="false">Saved Views<span class="caret">&#9662;</span></button>
+            <div class="menu" id="saved-views-menu" role="menu">
+              <div class="menu-header">My Saved Views</div>
+              <button class="menu-item" data-preset="my-queue">My Queue<span class="kbd">P</span></button>
+              <button class="menu-item" data-preset="stale">Stale &gt; 14 Days<span class="kbd">S</span></button>
+              <button class="menu-item" data-preset="this-week">This Week<span class="kbd">W</span></button>
+              <div class="menu-header">Manage</div>
+              <button class="menu-item" id="save-current-view">Save Current View&hellip;</button>
+            </div>
+          </div>
+          <div class="menu-anchor">
+            <button class="icon-btn" id="export-btn" aria-haspopup="true" aria-expanded="false">Export<span class="caret">&#9662;</span></button>
+            <div class="menu" id="export-menu" role="menu">
+              <div class="menu-header">Export Format</div>
+              <button class="menu-item" data-export="csv">Export as CSV</button>
+              <button class="menu-item" data-export="png">Export as PNG</button>
+              <button class="menu-item" data-export="pdf">Export as PDF</button>
+              <button class="menu-item" data-export="print">Print Report<span class="kbd">P</span></button>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="arch-banner" role="complementary">
+        <div class="col">
+          <div class="eyebrow">Architecture</div>
+          <strong>One object, three views</strong>
+          Both legacy dashboards (Referral and Partner Intake Summary) read the same Intake records. Pipeline shows what is in flight right now. Dashboard shows the period KPIs. Performance shows where the funnel leaks. Switching between them never reshapes filters or reloads data.
+        </div>
+        <div class="col">
+          <div class="eyebrow">Lifecycle Bar</div>
+          <strong>End-to-end visibility on every page</strong>
+          The strip below every page shows every intake stage end-to-end with live counts. Click any stage to drop into the records sitting in that stage on the Pipeline page. It is the visual that proves these are not separate dashboards &mdash; it is one pipeline with different lenses.
+        </div>
+      </div>
+
+      <section class="view active" data-view="pipeline" id="view-pipeline">
+        <div class="page-head">
+          <div class="lead">
+            <div class="breadcrumb">Wigdor LLP <span class="sep">/</span> Intake <span class="sep">/</span> Pipeline</div>
+            <h1>Intake Pipeline</h1>
+            <div class="sub">
+              <span>Operational view &mdash; what is in flight right now and what needs attention.</span>
+              <a href="#" onclick="switchView('dashboard'); return false;">Period KPIs &rarr;</a>
+              <a href="#" onclick="switchView('performance'); return false;">Funnel analysis &rarr;</a>
+            </div>
+          </div>
+          <div class="meta"><span>Last refreshed <strong id="last-refreshed-pipeline">just now</strong></span><button class="help-btn" onclick="toggleShortcuts(true)">?</button></div>
+        </div>
+        <div class="filterbar">
+          <div class="filter filter-search"><label for="pipe-search">Search</label><input type="search" id="pipe-search" placeholder="Lead, intake #&hellip;" /></div>
+          <div class="filter"><label for="pipe-partner">Partner</label><select id="pipe-partner" class="shared-filter"><option>All partners</option><option>Jeanne Christensen</option><option>David Gottlieb</option><option>John Crain</option><option>Conor Hurley</option><option>Unassigned</option></select></div>
+          <div class="filter"><label for="pipe-attorney">Attorney</label><select id="pipe-attorney" class="shared-filter"><option>All attorneys</option><option>Sarah Goldstein</option><option>Michael Chen</option><option>Rebecca Park</option></select></div>
+          <div class="filter"><label for="pipe-status">Intake Status</label><select id="pipe-status"><option>All statuses</option><option>Under Partner Review</option><option>Under Attorney Review</option><option>Pending Decision</option><option>Referral Email Pending</option><option>Awaiting Acceptance</option></select></div>
+          <div class="filter"><label for="pipe-date">Date Range</label><select id="pipe-date" class="shared-filter"><option>Last 12 months</option><option>Last quarter</option><option>YTD</option><option>Last 90 days</option><option>Lifetime</option></select></div>
+          <div class="shared-pill">Synced across <strong>all views</strong></div>
+          <button class="preset-btn" onclick="savePresetPrompt()">Save Preset</button>
+          <button class="reset-btn" data-reset="pipeline">Reset</button>
+        </div>
+        <div class="chip-row empty" id="pipe-chips" aria-live="polite"></div>
+        <div class="lifecycle">
+          <h3>Intake lifecycle &mdash; current counts<button class="lc-jump" onclick="switchView('performance')">View as funnel &rarr;</button></h3>
+          <div class="sub">Click any stage to filter the page below to records sitting in that stage right now.</div>
+          <div class="lc-row">
+            <div class="lc-stage op" data-stage="New" tabindex="0"><div class="lc-label">New</div><div class="lc-value" id="lc-new">47</div><div class="lc-meta">last 7 days</div></div>
+            <div class="lc-arrow">&rarr;</div>
+            <div class="lc-stage op" data-stage="Under Partner Review" tabindex="0"><div class="lc-label">Partner Review</div><div class="lc-value" id="lc-partner">159</div><div class="lc-meta" id="lc-partner-meta">5 partners</div></div>
+            <div class="lc-arrow">&rarr;</div>
+            <div class="lc-stage op" data-stage="Under Attorney Review" tabindex="0"><div class="lc-label">Attorney Review</div><div class="lc-value" id="lc-attorney">58</div><div class="lc-meta" id="lc-attorney-meta">5 attorneys</div></div>
+            <div class="lc-arrow">&rarr;</div>
+            <div class="lc-stage op" data-stage="Pending Decision" tabindex="0"><div class="lc-label">Pending Decision</div><div class="lc-value" id="lc-pending">23</div><div class="lc-meta">avg 11 days</div></div>
+            <div class="lc-arrow">&rarr;</div>
+            <div class="lc-fork">
+              <div class="lc-stage out" tabindex="0"><div class="lc-label">Open Matter</div><div class="lc-value" id="lc-open">89</div><div class="lc-meta">YTD</div></div>
+              <div class="lc-stage out muted" tabindex="0"><div class="lc-label">Declined</div><div class="lc-value" id="lc-declined">412</div><div class="lc-meta">YTD</div></div>
+              <div class="lc-stage out" tabindex="0"><div class="lc-label">Referred Out</div><div class="lc-value" id="lc-referred">1,320</div><div class="lc-meta">12 mo</div></div>
+            </div>
+            <div class="lc-arrow">&rarr;</div>
+            <div class="lc-stage dark" data-stage="Awaiting Acceptance" tabindex="0"><div class="lc-label">Awaiting Acceptance</div><div class="lc-value" id="lc-awaiting">32</div><div class="lc-meta">avg 19 days</div></div>
+            <div class="lc-arrow">&rarr;</div>
+            <div class="lc-stage gold" tabindex="0"><div class="lc-label">Accepted</div><div class="lc-value" id="lc-accepted">43</div><div class="lc-meta">12 mo</div></div>
+            <div class="lc-arrow">&rarr;</div>
+            <div class="lc-stage gold" tabindex="0"><div class="lc-label" id="lc-paid-label">Paid &middot; $128K</div><div class="lc-value" id="lc-paid">5</div><div class="lc-meta">12 mo</div></div>
+          </div>
+          <div style="display:flex; gap: var(--s-6); margin-top: var(--s-3); padding-left: 4px; flex-wrap: wrap;">
+            <span class="lc-section-label" style="color: var(--wig-black);" id="lc-op-summary">&#9670; Operational stages (319 active)</span>
+            <span class="lc-section-label" id="lc-decision-summary">Decision branch (501 YTD)</span>
+            <span class="lc-section-label" style="color: var(--wig-gold-dark);">&#9670; Outbound referral funnel</span>
+          </div>
+        </div>
+        <div class="kpi-row">
+          <div class="kpi"><div class="label">Active in pipeline</div><div class="value" id="kpi-pipe-active">319</div><div class="compare"><span class="prior" id="kpi-pipe-active-sub">across 5 partners, 5 attorneys</span></div></div>
+          <div class="kpi amber-edge"><div class="label">Stale (&gt; 14 days in stage)</div><div class="value" id="kpi-pipe-stale">38</div><div class="compare"><span class="delta down" id="kpi-pipe-stale-delta">&#9650; from 31</span><span class="prior">last week</span></div></div>
+          <div class="kpi dark-edge"><div class="label">Awaiting outside firm</div><div class="value" id="kpi-pipe-awaiting">32</div><div class="compare"><span class="prior">avg 19 days waiting</span></div></div>
+          <div class="kpi gold-edge"><div class="label">Referrals to email today</div><div class="value" id="kpi-pipe-email">14</div><div class="compare"><span class="prior" id="kpi-pipe-email-sub">5 admin &middot; 9 attorney</span></div></div>
+        </div>
+        <div class="insight-strip" id="pipe-insights">
+          <div class="insight alert" id="insight-bottleneck"><span class="badge">Bottleneck</span><div class="body" id="insight-bottleneck-body"><strong>Jeanne Christensen</strong> holds the largest share of the partner-review queue at 124 of 159 intakes.</div></div>
+          <div class="insight warn" id="insight-stale"><span class="badge">Stale</span><div class="body">3 referrals to <strong>Kessler Matura</strong> have been awaiting acceptance &gt; 30 days &mdash; longest is 47 days.</div></div>
+          <div class="insight win" id="insight-clear"><span class="badge">Clear</span><div class="body" id="insight-clear-body"><strong>Attorney Review queue</strong> is healthy at 58 &mdash; average 4 days in stage, no aging items.</div></div>
+        </div>
+        <div class="section-head"><div class="eyebrow">Live Queues</div><h2>Intake distribution</h2></div>
+        <div class="grid-2">
+          <div class="card" id="card-partner-queue"><h3>Intakes Under Partner Review <span class="badge-count" id="badge-partner-queue">159 total</span></h3><div class="sub">Live queue by assigned partner.</div><div class="chart-wrap"><canvas id="pipe-partner-chart"></canvas></div></div>
+          <div class="card" id="card-attorney-queue"><h3>Intakes Under Attorney Review <span class="badge-count" id="badge-attorney-queue">58 total</span></h3><div class="sub">Live queue by assigned attorney.</div><div class="chart-wrap"><canvas id="pipe-attorney-chart"></canvas></div></div>
+        </div>
+        <div class="card" id="card-pending-decision">
+          <h3>Intakes Pending Decision <span class="badge-count amber" id="badge-pending-decision">23 total &middot; showing 8</span></h3>
+          <div class="sub">Partner and Attorney both reviewed &mdash; awaiting decision.</div>
+          <table class="data-table" id="pending-decision-table">
+            <thead><tr><th>Intake #</th><th>Lead Name</th><th>Partner</th><th>Attorney</th><th>Practice Area</th><th>Days in Stage</th><th>Created</th></tr></thead>
+            <tbody id="pending-decision-tbody">
+              <tr data-partner="David Gottlieb" data-attorney="Rebecca Park" data-status="Pending Decision" data-id="INT-2815" data-lead="James Wright" data-practice="Whistleblower" data-days="22" data-created="Apr 17, 2026"><td class="id">INT-2815</td><td>James Wright</td><td>David Gottlieb</td><td>Rebecca Park</td><td>Whistleblower</td><td class="num stale">22d</td><td>Apr 17, 2026</td></tr>
+              <tr data-partner="Jeanne Christensen" data-attorney="Michael Chen" data-status="Pending Decision" data-id="INT-2820" data-lead="Aisha Patel" data-practice="Discrimination" data-days="18" data-created="Apr 21, 2026"><td class="id">INT-2820</td><td>Aisha Patel</td><td>Jeanne Christensen</td><td>Michael Chen</td><td>Discrimination</td><td class="num stale">18d</td><td>Apr 21, 2026</td></tr>
+              <tr data-partner="Conor Hurley" data-attorney="Michael Chen" data-status="Pending Decision" data-id="INT-2805" data-lead="Robert Khan" data-practice="Civil Rights" data-days="16" data-created="Apr 23, 2026"><td class="id">INT-2805</td><td>Robert Khan</td><td>Conor Hurley</td><td>Michael Chen</td><td>Civil Rights</td><td class="num stale">16d</td><td>Apr 23, 2026</td></tr>
+              <tr data-partner="Jeanne Christensen" data-attorney="Rebecca Park" data-status="Pending Decision" data-id="INT-2831" data-lead="Linda Brown" data-practice="Employment" data-days="14" data-created="Apr 25, 2026"><td class="id">INT-2831</td><td>Linda Brown</td><td>Jeanne Christensen</td><td>Rebecca Park</td><td>Employment</td><td class="num warn">14d</td><td>Apr 25, 2026</td></tr>
+              <tr data-partner="Jeanne Christensen" data-attorney="Sarah Goldstein" data-status="Pending Decision" data-id="INT-2841" data-lead="Maria Santos" data-practice="Employment" data-days="12" data-created="Apr 27, 2026"><td class="id">INT-2841</td><td>Maria Santos</td><td>Jeanne Christensen</td><td>Sarah Goldstein</td><td>Employment</td><td class="num warn">12d</td><td>Apr 27, 2026</td></tr>
+              <tr data-partner="Jeanne Christensen" data-attorney="Sarah Goldstein" data-status="Pending Decision" data-id="INT-2810" data-lead="Tina Liu" data-practice="Employment" data-days="9" data-created="Apr 30, 2026"><td class="id">INT-2810</td><td>Tina Liu</td><td>Jeanne Christensen</td><td>Sarah Goldstein</td><td>Employment</td><td class="num warn">9d</td><td>Apr 30, 2026</td></tr>
+              <tr data-partner="David Gottlieb" data-attorney="Michael Chen" data-status="Pending Decision" data-id="INT-2837" data-lead="David Park" data-practice="Civil Rights" data-days="8" data-created="May 1, 2026"><td class="id">INT-2837</td><td>David Park</td><td>David Gottlieb</td><td>Michael Chen</td><td>Civil Rights</td><td class="num">8d</td><td>May 1, 2026</td></tr>
+              <tr data-partner="John Crain" data-attorney="Sarah Goldstein" data-status="Pending Decision" data-id="INT-2828" data-lead="Carlos Reyes" data-practice="Employment" data-days="5" data-created="May 4, 2026"><td class="id">INT-2828</td><td>Carlos Reyes</td><td>John Crain</td><td>Sarah Goldstein</td><td>Employment</td><td class="num ok">5d</td><td>May 4, 2026</td></tr>
+            </tbody>
+          </table>
+          <div class="empty-state" id="empty-pending-decision" style="display:none;"><div class="glyph">i</div><div class="title">No matching intakes</div><div class="hint">No intakes match the active filter combination.</div><button class="reset-btn" data-reset="pipeline">Reset filters</button></div>
+        </div>
+        <div class="grid-2">
+          <div class="card" id="card-pending-email">
+            <h3>Referrals Pending Email Sends <span class="badge-count amber" id="badge-pending-email">14 total</span></h3>
+            <div class="sub">Decision made &mdash; referral email not yet dispatched.</div>
+            <table class="data-table" id="pending-email-table">
+              <thead><tr><th>Intake #</th><th>Lead</th><th>To Firm</th><th>Owner</th><th>Days</th></tr></thead>
+              <tbody id="pending-email-tbody">
+                <tr data-partner="Jeanne Christensen" data-attorney="Sarah Goldstein" data-id="INT-2780" data-lead="Elena Vasquez" data-firm="Phillips and Associates"><td class="id">INT-2780</td><td>Elena Vasquez</td><td>Phillips and Associates</td><td><span class="pill attorney">Attorney</span></td><td class="num warn">7d</td></tr>
+                <tr data-partner="David Gottlieb" data-attorney="Rebecca Park" data-id="INT-2787" data-lead="Sarah Kim" data-firm="Leeds Brown Law"><td class="id">INT-2787</td><td>Sarah Kim</td><td>Leeds Brown Law</td><td><span class="pill attorney">Attorney</span></td><td class="num">5d</td></tr>
+                <tr data-partner="Jeanne Christensen" data-attorney="Michael Chen" data-id="INT-2778" data-lead="Tom Anderson" data-firm="Schwartz, Perry &amp; Heller"><td class="id">INT-2778</td><td>Tom Anderson</td><td>Schwartz, Perry &amp; Heller</td><td><span class="pill admin">Admin</span></td><td class="num">4d</td></tr>
+                <tr data-partner="John Crain" data-attorney="Sarah Goldstein" data-id="INT-2799" data-lead="John Doe" data-firm="Phillips and Associates"><td class="id">INT-2799</td><td>John Doe</td><td>Phillips and Associates</td><td><span class="pill admin">Admin</span></td><td class="num">3d</td></tr>
+                <tr data-partner="Jeanne Christensen" data-attorney="Rebecca Park" data-id="INT-2785" data-lead="Marcus Hill" data-firm="Grubin Law"><td class="id">INT-2785</td><td>Marcus Hill</td><td>Grubin Law</td><td><span class="pill admin">Admin</span></td><td class="num ok">2d</td></tr>
+              </tbody>
+            </table>
+            <div class="empty-state" id="empty-pending-email" style="display:none;"><div class="glyph">i</div><div class="title">No pending emails</div><div class="hint">All referrals are out the door.</div><button class="reset-btn" data-reset="pipeline">Reset filters</button></div>
+          </div>
+          <div class="card" id="card-waiting-acceptance">
+            <h3>Referrals Waiting Case Acceptance <span class="badge-count red" id="badge-waiting-acceptance">32 total</span></h3>
+            <div class="sub">Email sent &mdash; no acceptance/decline received yet.</div>
+            <table class="data-table" id="waiting-acceptance-table">
+              <thead><tr><th>Receiving Firm</th><th>Waiting</th><th>Avg Days</th><th>Oldest</th><th>Status</th></tr></thead>
+              <tbody id="waiting-acceptance-tbody">
+                <tr data-partner="Jeanne Christensen" data-attorney="Sarah Goldstein" data-firm="Phillips and Associates"><td>Phillips and Associates</td><td class="num">12</td><td class="num">18d</td><td class="num">29d</td><td><span class="pill partner">OK</span></td></tr>
+                <tr data-partner="David Gottlieb" data-attorney="Michael Chen" data-firm="Grubin Law"><td>Grubin Law</td><td class="num">6</td><td class="num warn">24d</td><td class="num warn">35d</td><td><span class="pill attorney">Watch</span></td></tr>
+                <tr data-partner="Jeanne Christensen" data-attorney="Rebecca Park" data-firm="Leeds Brown Law"><td>Leeds Brown Law</td><td class="num">5</td><td class="num">11d</td><td class="num">19d</td><td><span class="pill partner">OK</span></td></tr>
+                <tr data-partner="David Gottlieb" data-attorney="Michael Chen" data-firm="Schwartz, Perry &amp; Heller"><td>Schwartz, Perry &amp; Heller</td><td class="num">4</td><td class="num warn">21d</td><td class="num warn">31d</td><td><span class="pill attorney">Watch</span></td></tr>
+                <tr data-partner="Conor Hurley" data-attorney="Rebecca Park" data-firm="Kessler Matura"><td>Kessler Matura</td><td class="num">3</td><td class="num stale">32d</td><td class="num stale">47d</td><td><span class="pill pending">Stale</span></td></tr>
+                <tr data-partner="Jeanne Christensen" data-attorney="Sarah Goldstein" data-firm="Kleinman Ginzberg"><td>Kleinman Ginzberg</td><td class="num">2</td><td class="num">14d</td><td class="num">22d</td><td><span class="pill partner">OK</span></td></tr>
+              </tbody>
+            </table>
+            <div class="empty-state" id="empty-waiting-acceptance" style="display:none;"><div class="glyph">i</div><div class="title">No firms with pending acceptance</div><div class="hint">All firms are responsive.</div><button class="reset-btn" data-reset="pipeline">Reset filters</button></div>
+          </div>
+        </div>
+        <div class="notes"><strong>What this page consolidates</strong>Replaces the existing Partner Intake Summary dashboard entirely &mdash; every widget on that screen is here, populated, and live. Adds the lifecycle strip across the top so the same partner who reads this page understands where these intakes go after decision. Adds the insight strip so partner-queue concentration and stale outbound referrals get surfaced instead of buried.</div>
+      </section>
+
+      <section class="view" data-view="dashboard" id="view-dashboard">
+        <div class="page-head">
+          <div class="lead">
+            <div class="breadcrumb">Wigdor LLP <span class="sep">/</span> Intake <span class="sep">/</span> Dashboard</div>
+            <h1>Referral Dashboard</h1>
+            <div class="sub"><span>Period KPIs across the outbound funnel.</span><a href="#" onclick="switchView('pipeline'); return false;">&larr; Pipeline</a><a href="#" onclick="switchView('performance'); return false;">Performance &rarr;</a></div>
+          </div>
+          <div class="meta"><span>Last refreshed <strong id="last-refreshed-dashboard">just now</strong></span><button class="help-btn" onclick="toggleShortcuts(true)">?</button></div>
+        </div>
+        <div class="filterbar">
+          <div class="filter"><label for="dash-firm">Firm</label><select id="dash-firm" class="shared-filter"><option>All firms</option><option>Phillips &amp; Assoc.</option><option>Grubin</option><option>Kessler</option><option>Leeds Brown</option><option>Schwartz P&amp;H</option><option>Kleinman</option><option>Seppinni</option><option>Other</option></select></div>
+          <div class="filter"><label for="dash-partner">Intake Partner</label><select id="dash-partner" class="shared-filter"><option>All partners</option><option>Jeanne Christensen</option><option>David Gottlieb</option><option>John Crain</option><option>Conor Hurley</option><option>Unassigned</option></select></div>
+          <div class="filter"><label for="dash-date">Date Range</label><select id="dash-date" class="shared-filter"><option>Last 12 months</option><option>Last quarter</option><option>YTD</option><option>Last 90 days</option><option>Lifetime</option></select></div>
+          <div class="shared-pill">Synced across <strong>all views</strong></div>
+          <button class="preset-btn" onclick="savePresetPrompt()">Save Preset</button>
+          <button class="reset-btn" data-reset="dashboard">Reset</button>
+        </div>
+        <div class="chip-row empty" id="dash-chips"></div>
+        <div class="mode-bar">
+          <div class="mode-chips" id="dash-modes" role="tablist">
+            <button data-mode="snap" class="active" role="tab">Snapshot</button>
+            <button data-mode="comp" role="tab">Compare vs Prior</button>
+            <button data-mode="trend" role="tab">Trend Over Time</button>
+          </div>
+          <div class="sub" style="font-size:12px; color:var(--wig-warm-gray);">Mode preference is remembered per user.</div>
+        </div>
+        <div id="dash-snap">
+          <div class="kpi-row">
+            <div class="kpi"><div class="label">Referred Out</div><div class="value" id="dash-snap-referred">1,320</div><div class="compare"><span class="prior" id="dash-snap-referred-sub">110/mo avg &middot; 8 firms</span></div></div>
+            <div class="kpi dark-edge"><div class="label">Accepted</div><div class="value" id="dash-snap-accepted">43</div><div class="compare"><span class="prior" id="dash-snap-accepted-sub">3.6/mo avg &middot; 7 firms</span></div></div>
+            <div class="kpi green-edge"><div class="label">Paid</div><div class="value" id="dash-snap-paid">5</div><div class="compare"><span class="prior" id="dash-snap-paid-sub">0.4/mo avg &middot; 3 firms</span></div></div>
+            <div class="kpi gold-edge"><div class="label">Fees Collected</div><div class="value" id="dash-snap-fees">$128K</div><div class="compare"><span class="prior" id="dash-snap-fees-sub">$10.6K/mo avg</span></div></div>
+          </div>
+          <div class="grid-2">
+            <div class="card"><h3>Referred Out by Firm</h3><div class="sub" id="snap-1-sub">Phillips 400 &middot; Grubin 172 &middot; Kessler 166</div><div class="chart-wrap"><canvas id="snap-1"></canvas></div></div>
+            <div class="card"><h3>Accepted by Firm</h3><div class="sub" id="snap-2-sub">Phillips 17 &middot; Leeds 8</div><div class="chart-wrap"><canvas id="snap-2"></canvas></div></div>
+            <div class="card"><h3>Paid Referrals by Firm</h3><div class="sub" id="snap-3-sub">Phillips 3 &middot; Leeds 1</div><div class="chart-wrap"><canvas id="snap-3"></canvas></div></div>
+            <div class="card"><h3>Fees by Firm</h3><div class="sub" id="snap-4-sub">Phillips $81K &middot; Other $32K</div><div class="chart-wrap"><canvas id="snap-4"></canvas></div></div>
+          </div>
+        </div>
+        <div id="dash-comp" style="display:none;">
+          <div class="kpi-row">
+            <div class="kpi"><div class="label">Referred Out</div><div class="value" id="dash-comp-referred">1,320</div><div class="compare"><span class="delta up" id="dash-comp-referred-delta">&#9650; 12.4%</span><span class="prior" id="dash-comp-referred-sub">vs 1,174 prior</span></div></div>
+            <div class="kpi dark-edge"><div class="label">Accepted</div><div class="value" id="dash-comp-accepted">43</div><div class="compare"><span class="delta up" id="dash-comp-accepted-delta">&#9650; 7.5%</span><span class="prior" id="dash-comp-accepted-sub">vs 40 prior</span></div></div>
+            <div class="kpi green-edge"><div class="label">Paid</div><div class="value" id="dash-comp-paid">5</div><div class="compare"><span class="delta down" id="dash-comp-paid-delta">&#9660; 28.6%</span><span class="prior" id="dash-comp-paid-sub">vs 7 prior</span></div></div>
+            <div class="kpi gold-edge"><div class="label">Fees</div><div class="value" id="dash-comp-fees">$128K</div><div class="compare"><span class="delta up" id="dash-comp-fees-delta">&#9650; 22.1%</span><span class="prior" id="dash-comp-fees-sub">vs $105K prior</span></div></div>
+          </div>
+          <div class="grid-2">
+            <div class="card"><h3>Referred Out &mdash; current vs prior</h3><div class="chart-wrap"><canvas id="comp-1"></canvas></div></div>
+            <div class="card"><h3>Accepted &mdash; current vs prior</h3><div class="chart-wrap"><canvas id="comp-2"></canvas></div></div>
+            <div class="card"><h3>Fees &mdash; current vs prior</h3><div class="chart-wrap"><canvas id="comp-3"></canvas></div></div>
+            <div class="card"><h3>Paid &mdash; current vs prior</h3><div class="chart-wrap"><canvas id="comp-4"></canvas></div></div>
+          </div>
+        </div>
+        <div id="dash-trend" style="display:none;">
+          <div class="kpi-row">
+            <div class="kpi"><div class="label">Referred (12mo)</div><div class="value" id="dash-trend-referred">1,320</div><div class="compare"><span class="delta up">&#9650; trend</span><span class="prior" id="dash-trend-referred-sub">110/mo avg</span></div><canvas class="spark" id="spark-1"></canvas></div>
+            <div class="kpi dark-edge"><div class="label">Accepted (12mo)</div><div class="value" id="dash-trend-accepted">43</div><div class="compare"><span class="delta up">&#9650; trend</span><span class="prior" id="dash-trend-accepted-sub">3.6/mo avg</span></div><canvas class="spark" id="spark-2"></canvas></div>
+            <div class="kpi green-edge"><div class="label">Paid (12mo)</div><div class="value" id="dash-trend-paid">5</div><div class="compare"><span class="delta down">&#9660; flat</span><span class="prior" id="dash-trend-paid-sub">0.4/mo avg</span></div><canvas class="spark" id="spark-3"></canvas></div>
+            <div class="kpi gold-edge"><div class="label">Fees (12mo)</div><div class="value" id="dash-trend-fees">$128K</div><div class="compare"><span class="delta up">&#9650; trend</span><span class="prior" id="dash-trend-fees-sub">$10.6K/mo avg</span></div><canvas class="spark" id="spark-4"></canvas></div>
+          </div>
+          <div class="card"><h3>Referrals over time &mdash; monthly</h3><div class="chart-wrap tall"><canvas id="trend-line"></canvas></div></div>
+          <div class="card"><h3>Stacked monthly volume by firm</h3><div class="chart-wrap tall"><canvas id="trend-stack"></canvas></div></div>
+        </div>
+      </section>
+
+      <section class="view" data-view="performance" id="view-performance">
+        <div class="page-head">
+          <div class="lead">
+            <div class="breadcrumb">Wigdor LLP <span class="sep">/</span> Intake <span class="sep">/</span> Performance</div>
+            <h1>Referral Performance</h1>
+            <div class="sub"><span>Where referrals leak, who converts, which conversations to have.</span><a href="#" onclick="switchView('pipeline'); return false;">&larr; Pipeline</a><a href="#" onclick="switchView('dashboard'); return false;">&larr; Dashboard</a></div>
+          </div>
+          <div class="meta"><span>Last refreshed <strong id="last-refreshed-performance">just now</strong></span><button class="help-btn" onclick="toggleShortcuts(true)">?</button></div>
+        </div>
+        <div class="filterbar">
+          <div class="filter"><label for="perf-firm">Firm</label><select id="perf-firm" class="shared-filter"><option>All firms</option><option>Phillips &amp; Assoc.</option><option>Grubin</option><option>Kessler</option><option>Leeds Brown</option><option>Schwartz P&amp;H</option><option>Kleinman</option><option>Seppinni</option><option>Other</option></select></div>
+          <div class="filter"><label for="perf-partner">Intake Partner</label><select id="perf-partner" class="shared-filter"><option>All partners</option><option>Jeanne Christensen</option><option>David Gottlieb</option><option>John Crain</option><option>Conor Hurley</option><option>Unassigned</option></select></div>
+          <div class="filter"><label for="perf-date">Date Range</label><select id="perf-date" class="shared-filter"><option>Last 12 months</option><option>Last quarter</option><option>YTD</option><option>Last 90 days</option><option>Lifetime</option></select></div>
+          <div class="filter"><label for="perf-practice">Practice Area</label><select id="perf-practice"><option>All</option><option>Employment</option><option>Civil Rights</option><option>Discrimination</option><option>Whistleblower</option></select></div>
+          <div class="shared-pill">Synced across <strong>all views</strong></div>
+          <button class="preset-btn" onclick="savePresetPrompt()">Save Preset</button>
+          <button class="reset-btn" data-reset="performance">Reset</button>
+        </div>
+        <div class="chip-row empty" id="perf-chips"></div>
+        <div class="insight-strip" id="perf-insights">
+          <div class="insight win" id="perf-insight-1"><span class="badge" id="perf-insight-1-badge">Bright spot</span><div class="body" id="perf-insight-1-body"><strong>Filipattos</strong> converts 41.7% of referrals &mdash; 12&times; the firm average.</div></div>
+          <div class="insight warn" id="perf-insight-2"><span class="badge" id="perf-insight-2-badge">Watch</span><div class="body" id="perf-insight-2-body"><strong>Phillips &amp; Associates</strong> takes 30% of volume, converts 4.3%. Great for fees ($81K), low rate.</div></div>
+          <div class="insight alert" id="perf-insight-3"><span class="badge" id="perf-insight-3-badge">Leak</span><div class="body" id="perf-insight-3-body">Acceptance-to-paid is <strong>11.6%</strong> &mdash; most accepted referrals never close.</div></div>
+        </div>
+        <div class="card" style="padding: var(--s-6);">
+          <h3>Referral conversion funnel</h3>
+          <div class="sub">Every referral starts at left.</div>
+          <div class="funnel-row">
+            <div class="funnel-stage"><div class="stage-label">Referred Out</div><div class="stage-value" id="funnel-referred">1,320</div><div class="stage-meta" id="funnel-referred-sub">110/mo &middot; 8 firms</div><div class="arrow"></div></div>
+            <div class="funnel-stage"><div class="stage-label">Accepted</div><div class="stage-value" id="funnel-accepted">43</div><div class="stage-meta" id="funnel-accepted-sub">3.6/mo &middot; 7 firms</div><div class="arrow"></div></div>
+            <div class="funnel-stage"><div class="stage-label">Paid</div><div class="stage-value" id="funnel-paid">5</div><div class="stage-meta" id="funnel-paid-sub">0.4/mo &middot; 3 firms</div><div class="arrow"></div></div>
+            <div class="funnel-stage"><div class="stage-label">Fees Received</div><div class="stage-value" id="funnel-fees">$128K</div><div class="stage-meta" id="funnel-fees-sub">$25.6K avg &middot; top: Phillips</div></div>
+          </div>
+          <div class="conv-row">
+            <div class="conv-cell">Stage 1 &rarr; 2 acceptance rate <span class="pct" id="conv-accept-rate">3.3%</span></div>
+            <div class="conv-cell">Stage 2 &rarr; 3 paid rate <span class="pct" id="conv-paid-rate">11.6%</span></div>
+            <div class="conv-cell">Stage 3 &rarr; 4 fee per paid <span class="pct" id="conv-fee-per">$25.6K</span></div>
+            <div class="conv-cell">End-to-end yield <span class="pct" id="conv-yield">$97 / referral</span></div>
+          </div>
+        </div>
+        <div class="grid-perf">
+          <div class="card">
+            <h3>Firm-level conversion <span class="badge-count">9 firms</span></h3>
+            <div class="sub">Click a row to filter the page to that firm.</div>
+            <table class="data-table" id="perf-firm-table">
+              <thead><tr><th>Firm</th><th>Referred</th><th>Accepted</th><th>Acceptance %</th><th>Paid</th><th>Fees</th></tr></thead>
+              <tbody id="perf-firm-tbody">
+                <tr data-firm="Filipattos" style="background:#FFFCEB;"><td>Filipattos</td><td class="num">12</td><td class="num">5</td><td class="num ok">41.7%</td><td class="num">0</td><td class="num">$0</td></tr>
+                <tr data-firm="Kleinman"><td>Kleinman Ginzberg</td><td class="num">78</td><td class="num">5</td><td class="num">6.4%</td><td class="num">0</td><td class="num">$0</td></tr>
+                <tr data-firm="Leeds Brown"><td>Leeds Brown Law</td><td class="num">158</td><td class="num">8</td><td class="num">5.1%</td><td class="num">1</td><td class="num">$15K</td></tr>
+                <tr data-firm="Phillips &amp; Assoc."><td>Phillips and Associates</td><td class="num">400</td><td class="num">17</td><td class="num">4.3%</td><td class="num">3</td><td class="num">$81K</td></tr>
+                <tr data-firm="Grubin"><td>Grubin Law</td><td class="num">172</td><td class="num">5</td><td class="num">2.9%</td><td class="num">0</td><td class="num">$0</td></tr>
+                <tr data-firm="Other"><td>Other</td><td class="num">116</td><td class="num">3</td><td class="num">2.6%</td><td class="num">1</td><td class="num">$32K</td></tr>
+                <tr data-firm="Seppinni"><td>Seppinni Law</td><td class="num">78</td><td class="num">2</td><td class="num">2.6%</td><td class="num">0</td><td class="num">$0</td></tr>
+                <tr data-firm="Schwartz P&amp;H"><td>Schwartz, Perry &amp; Heller</td><td class="num">152</td><td class="num">3</td><td class="num">2.0%</td><td class="num">0</td><td class="num">$0</td></tr>
+                <tr data-firm="Kessler"><td>Kessler Matura</td><td class="num">166</td><td class="num">0</td><td class="num stale">0.0%</td><td class="num">0</td><td class="num">$0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card"><h3>Volume vs Acceptance %</h3><div class="sub">Bubble = total fees.</div><div class="chart-wrap tall"><canvas id="perf-bubble"></canvas></div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card"><h3>Time to acceptance &mdash; by firm</h3><div class="sub">Days from referral sent to firm response.</div><div class="chart-wrap"><canvas id="perf-time"></canvas></div></div>
+          <div class="card"><h3>Fee per accepted referral</h3><div class="sub">Of accepted referrals that paid.</div><div class="chart-wrap"><canvas id="perf-fee"></canvas></div></div>
+        </div>
+      </section>
+      <div class="comp-foot"><div class="left"><span class="name">WIGDOR LLP</span><span>Confidential &middot; Privileged Work Product</span></div><div class="right"><span class="gold">v5.0</span> &middot; Intake Command Center &middot; Built by ACS for Salesforce</div></div>
+    </div>
+  </article>
+</main>
+<div class="scrim" id="scrim" aria-hidden="true"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="dr-head">
+    <button class="dr-close" id="drawer-close">&times;</button>
+    <div class="dr-eyebrow">Intake Detail</div>
+    <h2 class="dr-title" id="drawer-title">&mdash;</h2>
+    <div class="dr-id" id="drawer-id">&mdash; <a href="#" onclick="event.preventDefault(); showToast('Salesforce link', 'Would open the Intake record in Salesforce in production.');">Open in Salesforce</a></div>
+  </div>
+  <div class="dr-body">
+    <div class="dr-section"><div class="label">Key fields</div><div class="field-grid" id="drawer-fields">
+      <div><div class="k">Partner</div><div class="v" data-k="partner">&mdash;</div></div>
+      <div><div class="k">Attorney</div><div class="v" data-k="attorney">&mdash;</div></div>
+      <div><div class="k">Practice Area</div><div class="v" data-k="practice">&mdash;</div></div>
+      <div><div class="k">Stage</div><div class="v" data-k="status">&mdash;</div></div>
+      <div><div class="k">Days in Stage</div><div class="v" data-k="days">&mdash;</div></div>
+      <div><div class="k">Created</div><div class="v" data-k="created">&mdash;</div></div>
+    </div></div>
+    <div class="dr-section"><div class="label">Recent activity</div><ul class="activity" id="drawer-activity">
+      <li><div class="when">Today &middot; 10:42 AM</div><div class="what"><strong>Sarah Mitchell</strong> reviewed the intake summary and added internal note.</div></li>
+      <li><div class="when">Yesterday &middot; 4:15 PM</div><div class="what"><strong>Rebecca Park</strong> uploaded supporting documentation (3 files).</div></li>
+      <li><div class="when">Mon &middot; 9:30 AM</div><div class="what">Initial intake call completed; conflicts check passed.</div></li>
+      <li><div class="when">Sun &middot; 7:12 PM</div><div class="what">Lead form submitted via firm website.</div></li>
+    </ul></div>
+    <div class="dr-section"><div class="label">Next recommended step</div><p style="font-size:13px; line-height:1.55; margin: 4px 0 0; color: #1A1A1A;">Aging beyond 14 days suggests the assigned partner should re-route or decision this intake by end of week.</p></div>
+  </div>
+  <div class="dr-foot"><button class="btn" onclick="closeDrawer()">Close</button><button class="btn primary" onclick="showToast('Routed', 'Intake routing simulated. Production would invoke the routing flow.');">Route Intake</button></div>
+</aside>
+<div class="shortcut-overlay" id="shortcut-overlay" role="dialog" aria-modal="true">
+  <div class="shortcut-card"><div class="eyebrow">Keyboard</div><h2>Shortcuts</h2><ul>
+    <li><span>Pipeline view</span><kbd>1</kbd></li>
+    <li><span>Dashboard view</span><kbd>2</kbd></li>
+    <li><span>Performance view</span><kbd>3</kbd></li>
+    <li><span>Focus search</span><kbd>/</kbd></li>
+    <li><span>Reset filters on current view</span><kbd>R</kbd></li>
+    <li><span>Show / hide shortcuts</span><kbd>?</kbd></li>
+    <li><span>Close drawer / overlay</span><kbd>Esc</kbd></li>
+  </ul><div class="closebar">Press <kbd style="margin:0 2px;">Esc</kbd> or click outside to close</div></div>
+</div>
+<div class="toast-stack" id="toast-stack" role="status" aria-live="polite"></div>
+<div class="lex-utility-bar" role="region" aria-label="Utility bar">
+  <div class="ub-item" title="History"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>History</div>
+  <div class="ub-item" title="Notes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>Notes<span class="badge">3</span></div>
+  <div class="ub-item" title="Recent Items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Recent Items</div>
+  <div class="ub-spacer"></div>
+  <div class="ub-meta">API v62.0 &middot; LightningExperience &middot; Wigdor Production</div>
+</div>
+<script>
+  if (typeof Chart !== 'undefined' && typeof ChartDataLabels !== 'undefined') { Chart.register(ChartDataLabels); }
+  const W = { black:'#0A0A0A', charcoal:'#1A1A1A', ink:'#2A2A2A', gray:'#6B6B6B', midgray:'#9A9A9A', lightgray:'#DDDDDD', cream:'#FAFAF7', gold:'#C9A96E', goldDark:'#A8884E', goldLight:'#E8DCBE', crimson:'#8B0000', success:'#2F6B3A', warning:'#B8842B' };
+  const palette = [W.black, W.charcoal, W.gray, W.gold, W.success, W.midgray, W.warning, W.crimson];
+  const firms = ['Phillips & Assoc.', 'Grubin', 'Kessler', 'Leeds Brown', 'Schwartz P&H', 'Kleinman', 'Seppinni', 'Other'];
+  const referredCurr = [400,172,166,158,152,78,78,116];
+  const referredPrior = [355,141,178,130,145,91,60,74];
+  const acceptedCurr = [17,5,0,8,3,5,2,3];
+  const acceptedPrior = [14,4,0,9,4,3,4,2];
+  const feesCurr = [81000,0,0,15000,0,0,0,32000];
+  const feesPrior = [62000,0,0,11000,0,0,0,32000];
+  const paidCurr = [3,0,0,1,0,0,0,1];
+  const paidPrior = [4,0,0,1,0,0,0,2];
+  const months = ['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May'];
+  const refMonthly = [82,95,110,102,124,130,88,105,118,122,128,116];
+  const accMonthly = [2,3,5,4,6,5,3,4,3,4,2,2];
+  const paidMonthly = [0,1,1,0,0,1,0,0,1,0,0,1];
+  const feesMonthly = [0,12000,18000,0,0,22000,0,0,15000,0,0,61000];
+  const partnerQueue = { labels:['Jeanne Christensen','David Gottlieb','John Crain','Unassigned','Conor Hurley'], data:[124,18,8,8,1] };
+  const attorneyQueue = { labels:['Sarah Goldstein','Michael Chen','Rebecca Park','David Gottlieb','Unassigned'], data:[22,15,11,6,4] };
+
+  function switchView(target) {
+    document.querySelectorAll('.applnav .nav-tab').forEach(b => { const a = b.dataset.view === target; b.classList.toggle('active', a); b.setAttribute('aria-selected', a ? 'true' : 'false'); });
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.dataset.view === target));
+    setTimeout(renderAll, 50);
+    window.scrollTo({ top:0, behavior:'smooth' });
+  }
+  document.querySelectorAll('.applnav .nav-tab').forEach(b => b.addEventListener('click', () => switchView(b.dataset.view)));
+  document.querySelectorAll('#dash-modes button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#dash-modes button').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+      btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+      ['snap','comp','trend'].forEach(m => { document.getElementById('dash-'+m).style.display = (m === btn.dataset.mode) ? 'block' : 'none'; });
+      try { localStorage.setItem('wigdor.dashMode', btn.dataset.mode); } catch(e){}
+      setTimeout(renderAll, 50);
+    });
+  });
+  try { const sm = localStorage.getItem('wigdor.dashMode'); if (sm) { const b = document.querySelector('#dash-modes button[data-mode="'+sm+'"]'); if (b) b.click(); } } catch(e){}
+
+  function getDateMul(v){switch((v||'').trim()){case 'Last 12 months':return 1;case 'YTD':return 0.42;case 'Last quarter':return 0.25;case 'Last 90 days':return 0.25;case 'Lifetime':return 1.6;default:return 1;}}
+  function getPartnerMul(v){switch((v||'').trim()){case 'Jeanne Christensen':return 0.45;case 'David Gottlieb':return 0.22;case 'John Crain':return 0.12;case 'Conor Hurley':return 0.10;case 'Unassigned':return 0.06;default:return 1;}}
+  function getPracticeMul(v){switch((v||'').trim()){case 'Employment':return 0.55;case 'Civil Rights':return 0.20;case 'Discrimination':return 0.15;case 'Whistleblower':return 0.10;default:return 1;}}
+
+  function readFilters() {
+    const g = id => { const e = document.getElementById(id); return e ? e.value : ''; };
+    return {
+      pipePartner:g('pipe-partner')||'All partners', pipeAttorney:g('pipe-attorney')||'All attorneys', pipeStatus:g('pipe-status')||'All statuses', pipeDate:g('pipe-date')||'Last 12 months', pipeSearch:(g('pipe-search')||'').trim(),
+      dashFirm:g('dash-firm')||'All firms', dashPartner:g('dash-partner')||'All partners', dashDate:g('dash-date')||'Last 12 months',
+      perfFirm:g('perf-firm')||'All firms', perfPartner:g('perf-partner')||'All partners', perfDate:g('perf-date')||'Last 12 months', perfPractice:g('perf-practice')||'All'
+    };
+  }
+  function syncAllFilters(source) {
+    const els = {};
+    ['pipe','dash','perf'].forEach(v => { els[v] = { firm:document.getElementById(v+'-firm'), partner:document.getElementById(v+'-partner'), attorney:document.getElementById(v+'-attorney'), date:document.getElementById(v+'-date') }; });
+    const src = els[source];
+    Object.keys(els).forEach(v => {
+      if (v === source) return;
+      ['firm','partner','attorney','date'].forEach(k => {
+        if (src[k] && els[v][k]) {
+          for (let i=0;i<els[v][k].options.length;i++){ if(els[v][k].options[i].text === src[k].value){els[v][k].selectedIndex = i; break;} }
+        }
+      });
+    });
+    const f = readFilters();
+    const partner = f.pipePartner !== 'All partners' ? f.pipePartner : f.dashPartner !== 'All partners' ? f.dashPartner : f.perfPartner !== 'All partners' ? f.perfPartner : 'All partners';
+    const attorney = f.pipeAttorney !== 'All attorneys' ? f.pipeAttorney : 'All attorneys';
+    const firm = f.dashFirm !== 'All firms' ? f.dashFirm : f.perfFirm !== 'All firms' ? f.perfFirm : 'All firms';
+    const date = src.date ? src.date.value : f.pipeDate;
+    const parts = [];
+    if (partner !== 'All partners') parts.push(partner);
+    if (attorney !== 'All attorneys') parts.push(attorney);
+    if (firm !== 'All firms') parts.push(firm);
+    parts.push(date);
+    document.getElementById('filter-pill').textContent = 'Filters: ' + (parts.length ? parts.join(' · ') : 'All partners · All attorneys · Last 12 mo');
+    renderChips();
+  }
+  function renderChips() {
+    const f = readFilters();
+    const build = (entries, prefix) => {
+      const row = document.getElementById(prefix+'-chips');
+      if (!row) return;
+      row.innerHTML = '';
+      const visible = entries.filter(e => e.show);
+      if (!visible.length) { row.classList.add('empty'); return; }
+      row.classList.remove('empty');
+      const lbl = document.createElement('span'); lbl.className = 'chip-label'; lbl.textContent = 'Active filters'; row.appendChild(lbl);
+      visible.forEach(e => {
+        const chip = document.createElement('span'); chip.className = 'chip';
+        chip.innerHTML = '<span><strong style="color:var(--wig-warm-gray); font-weight:600; margin-right:4px;">'+e.label+':</strong>'+e.value+'</span><button class="x" data-filter="'+e.id+'">&times;</button>';
+        chip.querySelector('.x').addEventListener('click', () => { const el = document.getElementById(e.id); if (el) el.selectedIndex = 0; if (e.shared) syncAllFilters(prefix); else renderChips(); renderAll(); });
+        row.appendChild(chip);
+      });
+    };
+    build([{id:'pipe-partner',label:'Partner',value:f.pipePartner,show:f.pipePartner!=='All partners',shared:true},{id:'pipe-attorney',label:'Attorney',value:f.pipeAttorney,show:f.pipeAttorney!=='All attorneys',shared:true},{id:'pipe-status',label:'Status',value:f.pipeStatus,show:f.pipeStatus!=='All statuses',shared:false},{id:'pipe-date',label:'Date',value:f.pipeDate,show:f.pipeDate!=='Last 12 months',shared:true}], 'pipe');
+    build([{id:'dash-firm',label:'Firm',value:f.dashFirm,show:f.dashFirm!=='All firms',shared:true},{id:'dash-partner',label:'Partner',value:f.dashPartner,show:f.dashPartner!=='All partners',shared:true},{id:'dash-date',label:'Date',value:f.dashDate,show:f.dashDate!=='Last 12 months',shared:true}], 'dash');
+    build([{id:'perf-firm',label:'Firm',value:f.perfFirm,show:f.perfFirm!=='All firms',shared:true},{id:'perf-partner',label:'Partner',value:f.perfPartner,show:f.perfPartner!=='All partners',shared:true},{id:'perf-date',label:'Date',value:f.perfDate,show:f.perfDate!=='Last 12 months',shared:true},{id:'perf-practice',label:'Practice',value:f.perfPractice,show:f.perfPractice!=='All',shared:false}], 'perf');
+  }
+  document.querySelectorAll('.shared-filter').forEach(el => { el.addEventListener('change', () => { syncAllFilters(el.id.split('-')[0]); renderAll(); }); });
+  ['pipe-status','perf-practice','pipe-search'].forEach(id => { const el = document.getElementById(id); if (el) el.addEventListener(el.tagName === 'INPUT' ? 'input' : 'change', () => { renderChips(); renderAll(); }); });
+  function resetView(prefix) {
+    ['firm','partner','attorney','status','date','practice'].forEach(k => { const el = document.getElementById(prefix+'-'+k); if (el) el.selectedIndex = 0; });
+    const s = document.getElementById(prefix+'-search'); if (s) s.value = '';
+    syncAllFilters(prefix); renderAll();
+  }
+  document.body.addEventListener('click', e => { const btn = e.target.closest('.reset-btn'); if (!btn) return; const view = document.querySelector('.view.active').dataset.view; resetView(view === 'pipeline' ? 'pipe' : view === 'dashboard' ? 'dash' : 'perf'); });
+
+  const fmtDefault = v => (v===0||v==null) ? '' : Number(v).toLocaleString();
+  const fmtCurrency = v => (v===0||v==null) ? '' : '$'+(v/1000).toFixed(v<1000?1:0)+'K';
+  const fmtDays = v => (v===0||v==null) ? '' : v+'d';
+  const baseOpts = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{labels:{font:{family:'Inter',size:12},color:W.charcoal}}, tooltip:{backgroundColor:W.black,titleFont:{family:'Playfair Display',size:13},bodyFont:{family:'Inter',size:12},titleColor:W.gold,bodyColor:'#FFFFFF',borderColor:W.gold,borderWidth:1,padding:10,cornerRadius:2}, datalabels:{anchor:'end',align:'top',color:W.charcoal,font:{family:'Inter',weight:700,size:11},formatter:fmtDefault,clip:false} },
+    scales:{ x:{ticks:{font:{family:'Inter',size:11},color:W.charcoal},grid:{display:false},border:{color:W.lightgray}}, y:{ticks:{font:{family:'Inter',size:11},color:W.gray},grid:{display:false,drawTicks:true,tickColor:W.lightgray,tickLength:4},border:{color:W.lightgray},beginAtZero:true} }
+  };
+  const charts = {};
+  function make(id, type, data, opts={}) { if (charts[id]) charts[id].destroy(); const el = document.getElementById(id); if (!el) return; charts[id] = new Chart(el, { type, data, options:{...baseOpts, ...opts} }); }
+  function spark(id, values, color=W.black) { if (charts[id]) charts[id].destroy(); const el = document.getElementById(id); if (!el) return; charts[id] = new Chart(el, { type:'line', data:{labels:values.map((_,i)=>i),datasets:[{data:values,borderColor:color,backgroundColor:color+'22',fill:true,tension:0.35,pointRadius:0,borderWidth:1.5}]}, options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false},datalabels:{display:false}},scales:{x:{display:false},y:{display:false}},animation:false} }); }
+
+  function getFilteredData() {
+    const f = readFilters();
+    const pdm = getDateMul(f.pipeDate);
+    let pqL = partnerQueue.labels.slice(); let pqD = partnerQueue.data.slice();
+    if (f.pipePartner !== 'All partners') { const i = pqL.indexOf(f.pipePartner); if (i>=0) {pqL=[pqL[i]]; pqD=[pqD[i]];} else {pqL=[f.pipePartner]; pqD=[0];} }
+    else if (f.pipeAttorney !== 'All attorneys') { pqD = pqD.map(v => Math.round(v*0.55)); }
+    pqD = pqD.map(v => Math.max(0, Math.round(v*pdm)));
+    let aqL = attorneyQueue.labels.slice(); let aqD = attorneyQueue.data.slice();
+    if (f.pipeAttorney !== 'All attorneys') { const i = aqL.indexOf(f.pipeAttorney); if (i>=0) {aqL=[aqL[i]]; aqD=[aqD[i]];} else {aqL=[f.pipeAttorney]; aqD=[0];} }
+    else if (f.pipePartner !== 'All partners') { aqD = aqD.map(v => Math.round(v*0.55)); }
+    aqD = aqD.map(v => Math.max(0, Math.round(v*pdm)));
+    const dmu = getDateMul(f.dashDate) * getPartnerMul(f.dashPartner);
+    let dRef = referredCurr.map(v=>Math.max(0,Math.round(v*dmu))); let dRefP = referredPrior.map(v=>Math.max(0,Math.round(v*dmu)));
+    let dAcc = acceptedCurr.map(v=>Math.max(0,Math.round(v*dmu))); let dAccP = acceptedPrior.map(v=>Math.max(0,Math.round(v*dmu)));
+    let dPaid = paidCurr.map(v=>Math.max(0,Math.round(v*dmu))); let dPaidP = paidPrior.map(v=>Math.max(0,Math.round(v*dmu)));
+    let dFees = feesCurr.map(v=>Math.max(0,Math.round(v*dmu))); let dFeesP = feesPrior.map(v=>Math.max(0,Math.round(v*dmu)));
+    if (f.dashFirm !== 'All firms') { const i = firms.indexOf(f.dashFirm); const m = firms.map((_,k)=>k===i?1:0); dRef=dRef.map((v,k)=>v*m[k]); dRefP=dRefP.map((v,k)=>v*m[k]); dAcc=dAcc.map((v,k)=>v*m[k]); dAccP=dAccP.map((v,k)=>v*m[k]); dPaid=dPaid.map((v,k)=>v*m[k]); dPaidP=dPaidP.map((v,k)=>v*m[k]); dFees=dFees.map((v,k)=>v*m[k]); dFeesP=dFeesP.map((v,k)=>v*m[k]); }
+    const dRefM = refMonthly.map(v=>Math.max(0,Math.round(v*dmu)));
+    const dAccM = accMonthly.map(v=>Math.max(0,Math.round(v*dmu)));
+    const dPaidM = paidMonthly.map(v=>Math.max(0,Math.round(v*dmu)));
+    const dFeesM = feesMonthly.map(v=>Math.max(0,Math.round(v*dmu)));
+    const pmu = getDateMul(f.perfDate) * getPartnerMul(f.perfPartner) * getPracticeMul(f.perfPractice);
+    let pRef = referredCurr.map(v=>Math.max(0,Math.round(v*pmu)));
+    let pAcc = acceptedCurr.map(v=>Math.max(0,Math.round(v*pmu)));
+    let pPaid = paidCurr.map(v=>Math.max(0,Math.round(v*pmu)));
+    let pFees = feesCurr.map(v=>Math.max(0,Math.round(v*pmu)));
+    return {
+      f,
+      pipe:{partnerLabels:pqL,partnerData:pqD,attorneyLabels:aqL,attorneyData:aqD,partnerTotal:pqD.reduce((a,b)=>a+b,0),attorneyTotal:aqD.reduce((a,b)=>a+b,0),dateMul:pdm},
+      dash:{ref:dRef,refP:dRefP,acc:dAcc,accP:dAccP,paid:dPaid,paidP:dPaidP,fees:dFees,feesP:dFeesP,refMonthly:dRefM,accMonthly:dAccM,paidMonthly:dPaidM,feesMonthly:dFeesM,mul:dmu},
+      perf:{ref:pRef,acc:pAcc,paid:pPaid,fees:pFees,mul:pmu}
+    };
+  }
+  function fmtMoneyShort(v){ if (v>=1000) return '$'+Math.round(v/1000)+'K'; return '$'+v; }
+  function fmtNum(v){ return v.toLocaleString(); }
+  function pctDelta(c,p){ if (p===0) return c===0 ? '— flat' : '▲ new'; const d = ((c-p)/p)*100; return (d>=0?'▲':'▼')+' '+Math.abs(d).toFixed(1)+'%'; }
+  function applyRowFilter(tbid, pv, av, sv, sr) {
+    const tb = document.getElementById(tbid); if (!tb) return 0;
+    let shown = 0; const s = (sr||'').toLowerCase();
+    Array.from(tb.querySelectorAll('tr')).forEach(r => {
+      const rp = r.dataset.partner, ra = r.dataset.attorney, rs = r.dataset.status;
+      const rid = (r.dataset.id||'').toLowerCase(), rl = (r.dataset.lead||'').toLowerCase();
+      let ok = true;
+      if (pv && pv!=='All partners' && rp && rp!==pv) ok = false;
+      if (av && av!=='All attorneys' && ra && ra!==av) ok = false;
+      if (sv && sv!=='All statuses' && rs && rs!==sv) ok = false;
+      if (s && !(rid.includes(s)||rl.includes(s))) ok = false;
+      r.style.display = ok ? '' : 'none';
+      if (ok) shown++;
+    });
+    const empty = document.getElementById('empty-'+tbid.replace('-tbody',''));
+    const tableEl = tb.parentElement;
+    if (empty) { if (shown===0) { if (tableEl) tableEl.style.display='none'; empty.style.display='block'; } else { if (tableEl) tableEl.style.display=''; empty.style.display='none'; } }
+    return shown;
+  }
+  function renderPipelineMeta(s) {
+    const f = s.f, fp = s.pipe, dm = fp.dateMul;
+    const active = fp.partnerTotal + fp.attorneyTotal + Math.round(47*dm) + Math.round(23*dm);
+    document.getElementById('kpi-pipe-active').textContent = fmtNum(active);
+    document.getElementById('kpi-pipe-active-sub').textContent = f.pipePartner !== 'All partners' ? 'assigned to '+f.pipePartner : f.pipeAttorney !== 'All attorneys' ? 'assigned to '+f.pipeAttorney : 'across 5 partners, 5 attorneys';
+    const stale = Math.max(0, Math.round(38*dm*(f.pipePartner==='Jeanne Christensen'?0.55:1)));
+    document.getElementById('kpi-pipe-stale').textContent = fmtNum(stale);
+    const sp = Math.max(0, Math.round(31*dm));
+    document.getElementById('kpi-pipe-stale-delta').textContent = (stale>=sp ? '▲ from ' : '▼ from ') + sp;
+    document.getElementById('kpi-pipe-awaiting').textContent = fmtNum(Math.round(32*dm));
+    document.getElementById('kpi-pipe-email').textContent = fmtNum(Math.max(0, Math.round(14*dm*(f.pipePartner!=='All partners'?0.4:1))));
+    document.getElementById('kpi-pipe-email-sub').textContent = f.pipePartner !== 'All partners' ? f.pipePartner+"'s outbox" : '5 admin · 9 attorney';
+    const lcNew=Math.round(47*dm*(f.pipePartner!=='All partners'?0.3:1)), lcP=fp.partnerTotal, lcA=fp.attorneyTotal;
+    const lcPnd = Math.round(23*dm*(f.pipePartner==='Jeanne Christensen'?0.78:f.pipePartner!=='All partners'?0.25:1));
+    const lcOpen=Math.round(89*dm), lcDec=Math.round(412*dm), lcRef=Math.round(1320*dm), lcAw=Math.round(32*dm), lcAcc=Math.round(43*dm), lcPaid=Math.round(5*dm), lcFees=Math.round(128*dm);
+    document.getElementById('lc-new').textContent = fmtNum(lcNew);
+    document.getElementById('lc-partner').textContent = fmtNum(lcP);
+    document.getElementById('lc-partner-meta').textContent = f.pipePartner !== 'All partners' ? f.pipePartner.split(' ')[0] : fp.partnerLabels.length+' partners';
+    document.getElementById('lc-attorney').textContent = fmtNum(lcA);
+    document.getElementById('lc-attorney-meta').textContent = f.pipeAttorney !== 'All attorneys' ? f.pipeAttorney.split(' ')[0] : fp.attorneyLabels.length+' attorneys';
+    document.getElementById('lc-pending').textContent = fmtNum(lcPnd);
+    document.getElementById('lc-open').textContent = fmtNum(lcOpen);
+    document.getElementById('lc-declined').textContent = fmtNum(lcDec);
+    document.getElementById('lc-referred').textContent = fmtNum(lcRef);
+    document.getElementById('lc-awaiting').textContent = fmtNum(lcAw);
+    document.getElementById('lc-accepted').textContent = fmtNum(lcAcc);
+    document.getElementById('lc-paid').textContent = fmtNum(lcPaid);
+    document.getElementById('lc-paid-label').textContent = 'Paid · $'+lcFees+'K';
+    document.getElementById('lc-op-summary').textContent = '◆ Operational stages ('+fmtNum(lcNew+lcP+lcA+lcPnd)+' active)';
+    document.getElementById('lc-decision-summary').textContent = 'Decision branch ('+fmtNum(lcOpen+lcDec+lcRef)+' YTD)';
+    document.getElementById('badge-partner-queue').textContent = fmtNum(lcP)+' total';
+    document.getElementById('badge-attorney-queue').textContent = fmtNum(lcA)+' total';
+    const bb = document.getElementById('insight-bottleneck-body'), cb = document.getElementById('insight-clear-body');
+    if (f.pipePartner === 'Jeanne Christensen') bb.innerHTML = 'Filtered to <strong>Jeanne Christensen</strong> &mdash; '+lcP+' intakes in partner queue.';
+    else if (f.pipePartner !== 'All partners') bb.innerHTML = 'Filtered to <strong>'+f.pipePartner+'</strong> &mdash; '+lcP+' intakes in partner queue.';
+    else bb.innerHTML = '<strong>Jeanne Christensen</strong> holds the largest share of the partner-review queue at '+Math.round(lcP*0.78)+' of '+lcP+' intakes.';
+    if (f.pipeAttorney !== 'All attorneys') cb.innerHTML = 'Filtered to <strong>'+f.pipeAttorney+'</strong> &mdash; '+lcA+' in attorney queue.';
+    else cb.innerHTML = '<strong>Attorney Review queue</strong> is healthy at '+lcA+' &mdash; average 4 days in stage.';
+    const pdShown = applyRowFilter('pending-decision-tbody', f.pipePartner, f.pipeAttorney, f.pipeStatus, f.pipeSearch);
+    document.getElementById('badge-pending-decision').textContent = lcPnd+' total · showing '+pdShown;
+    const pdc = document.getElementById('card-pending-decision');
+    pdc.style.display = (f.pipeStatus !== 'All statuses' && f.pipeStatus !== 'Pending Decision') ? 'none' : '';
+    const peShown = applyRowFilter('pending-email-tbody', f.pipePartner, f.pipeAttorney, null, f.pipeSearch);
+    document.getElementById('badge-pending-email').textContent = peShown+' of 14';
+    const waShown = applyRowFilter('waiting-acceptance-tbody', f.pipePartner, f.pipeAttorney, null, f.pipeSearch);
+    document.getElementById('badge-waiting-acceptance').textContent = waShown+' firms · '+lcAw+' total';
+  }
+  function renderDashboardMeta(s) {
+    const d = s.dash;
+    const tR=d.ref.reduce((a,b)=>a+b,0), tA=d.acc.reduce((a,b)=>a+b,0), tP=d.paid.reduce((a,b)=>a+b,0), tF=d.fees.reduce((a,b)=>a+b,0);
+    const tRP=d.refP.reduce((a,b)=>a+b,0), tAP=d.accP.reduce((a,b)=>a+b,0), tPP=d.paidP.reduce((a,b)=>a+b,0), tFP=d.feesP.reduce((a,b)=>a+b,0);
+    const fa=d.ref.filter(v=>v>0).length, af=d.acc.filter(v=>v>0).length, pf=d.paid.filter(v=>v>0).length;
+    document.getElementById('dash-snap-referred').textContent = fmtNum(tR);
+    document.getElementById('dash-snap-referred-sub').textContent = (tR/12).toFixed(0)+'/mo avg · '+fa+' firms';
+    document.getElementById('dash-snap-accepted').textContent = fmtNum(tA);
+    document.getElementById('dash-snap-accepted-sub').textContent = (tA/12).toFixed(1)+'/mo avg · '+af+' firms';
+    document.getElementById('dash-snap-paid').textContent = fmtNum(tP);
+    document.getElementById('dash-snap-paid-sub').textContent = (tP/12).toFixed(1)+'/mo avg · '+pf+' firms';
+    document.getElementById('dash-snap-fees').textContent = fmtMoneyShort(tF);
+    document.getElementById('dash-snap-fees-sub').textContent = '$'+(tF/12000).toFixed(1)+'K/mo avg';
+    const sub = (arr, fmt) => firms.map((f,i)=>({n:f,v:arr[i]})).filter(o=>o.v>0).sort((a,b)=>b.v-a.v).slice(0,8).map(o=>o.n+' '+fmt(o.v)).join(' · ') || '(no data)';
+    document.getElementById('snap-1-sub').textContent = sub(d.ref, v=>fmtNum(v));
+    document.getElementById('snap-2-sub').textContent = sub(d.acc, v=>fmtNum(v));
+    document.getElementById('snap-3-sub').textContent = sub(d.paid, v=>fmtNum(v));
+    document.getElementById('snap-4-sub').textContent = sub(d.fees, v=>fmtMoneyShort(v));
+    document.getElementById('dash-comp-referred').textContent = fmtNum(tR);
+    document.getElementById('dash-comp-referred-delta').textContent = pctDelta(tR,tRP);
+    document.getElementById('dash-comp-referred-sub').textContent = 'vs '+fmtNum(tRP)+' prior';
+    document.getElementById('dash-comp-accepted').textContent = fmtNum(tA);
+    document.getElementById('dash-comp-accepted-delta').textContent = pctDelta(tA,tAP);
+    document.getElementById('dash-comp-accepted-sub').textContent = 'vs '+fmtNum(tAP)+' prior';
+    document.getElementById('dash-comp-paid').textContent = fmtNum(tP);
+    document.getElementById('dash-comp-paid-delta').textContent = pctDelta(tP,tPP);
+    document.getElementById('dash-comp-paid-sub').textContent = 'vs '+fmtNum(tPP)+' prior';
+    document.getElementById('dash-comp-fees').textContent = fmtMoneyShort(tF);
+    document.getElementById('dash-comp-fees-delta').textContent = pctDelta(tF,tFP);
+    document.getElementById('dash-comp-fees-sub').textContent = 'vs '+fmtMoneyShort(tFP)+' prior';
+    document.getElementById('dash-trend-referred').textContent = fmtNum(tR);
+    document.getElementById('dash-trend-referred-sub').textContent = (tR/12).toFixed(0)+'/mo avg';
+    document.getElementById('dash-trend-accepted').textContent = fmtNum(tA);
+    document.getElementById('dash-trend-accepted-sub').textContent = (tA/12).toFixed(1)+'/mo avg';
+    document.getElementById('dash-trend-paid').textContent = fmtNum(tP);
+    document.getElementById('dash-trend-paid-sub').textContent = (tP/12).toFixed(1)+'/mo avg';
+    document.getElementById('dash-trend-fees').textContent = fmtMoneyShort(tF);
+    document.getElementById('dash-trend-fees-sub').textContent = '$'+(tF/12000).toFixed(1)+'K/mo avg';
+  }
+  function renderPerformanceMeta(s) {
+    const f = s.f, p = s.perf;
+    const tR=p.ref.reduce((a,b)=>a+b,0), tA=p.acc.reduce((a,b)=>a+b,0), tP=p.paid.reduce((a,b)=>a+b,0), tF=p.fees.reduce((a,b)=>a+b,0);
+    const fa=p.ref.filter(v=>v>0).length, af=p.acc.filter(v=>v>0).length, pf=p.paid.filter(v=>v>0).length;
+    const aR=tR>0?(tA/tR)*100:0, pR=tA>0?(tP/tA)*100:0, fpp=tP>0?tF/tP:0, ypr=tR>0?tF/tR:0;
+    let topF = 'Phillips';
+    if (tF>0) { let mx=-1; firms.forEach((n,i)=>{ if (p.fees[i]>mx) {mx=p.fees[i]; topF=n.split(' ')[0];} }); }
+    document.getElementById('funnel-referred').textContent = fmtNum(tR);
+    document.getElementById('funnel-referred-sub').textContent = (tR/12).toFixed(0)+'/mo · '+fa+' firms';
+    document.getElementById('funnel-accepted').textContent = fmtNum(tA);
+    document.getElementById('funnel-accepted-sub').textContent = (tA/12).toFixed(1)+'/mo · '+af+' firms';
+    document.getElementById('funnel-paid').textContent = fmtNum(tP);
+    document.getElementById('funnel-paid-sub').textContent = (tP/12).toFixed(1)+'/mo · '+pf+' firms';
+    document.getElementById('funnel-fees').textContent = fmtMoneyShort(tF);
+    document.getElementById('funnel-fees-sub').textContent = tP>0 ? fmtMoneyShort(fpp)+' avg · top: '+topF : 'no fees in selection';
+    document.getElementById('conv-accept-rate').textContent = aR.toFixed(1)+'%';
+    document.getElementById('conv-paid-rate').textContent = pR.toFixed(1)+'%';
+    document.getElementById('conv-fee-per').textContent = fmtMoneyShort(Math.round(fpp));
+    document.getElementById('conv-yield').textContent = '$'+Math.round(ypr)+' / referral';
+    const tb = document.getElementById('perf-firm-tbody');
+    if (tb) { Array.from(tb.querySelectorAll('tr')).forEach(r => { const fr = r.dataset.firm; if (f.perfFirm !== 'All firms' && fr !== f.perfFirm && fr !== 'Filipattos') {r.style.opacity='0.35'; r.style.background='';} else if (f.perfFirm !== 'All firms' && fr === f.perfFirm) {r.style.opacity='1'; r.style.background='var(--wig-cream-2)';} else {r.style.opacity='1'; r.style.background=(fr==='Filipattos')?'#FFFCEB':'';} }); }
+    const i1=document.getElementById('perf-insight-1-body'), i2=document.getElementById('perf-insight-2-body'), i3=document.getElementById('perf-insight-3-body');
+    const i1b=document.getElementById('perf-insight-1-badge'), i2b=document.getElementById('perf-insight-2-badge');
+    if (f.perfFirm !== 'All firms') {
+      const i = firms.indexOf(f.perfFirm);
+      const fR = i>=0?p.ref[i]:0, fA = i>=0?p.acc[i]:0, fP = i>=0?p.paid[i]:0, fF = i>=0?p.fees[i]:0;
+      const ar = fR>0 ? ((fA/fR)*100).toFixed(1) : '0.0';
+      i1b.textContent = 'Focus'; i1.innerHTML = '<strong>'+f.perfFirm+'</strong> received '+fmtNum(fR)+' referrals, accepted '+fmtNum(fA)+' ('+ar+'%).';
+      i2b.textContent = 'Yield'; i2.innerHTML = 'Generated <strong>'+fmtMoneyShort(fF)+'</strong> in fees from '+fmtNum(fP)+' paid case'+(fP===1?'':'s')+'.';
+      i3.innerHTML = 'Acceptance-to-paid for this firm is <strong>'+(fA>0?((fP/fA)*100).toFixed(1):'0.0')+'%</strong>.';
+    } else if (f.perfPractice && f.perfPractice !== 'All') {
+      i1b.textContent = 'Practice'; i1.innerHTML = '<strong>'+f.perfPractice+'</strong> slice &mdash; '+fmtNum(tR)+' referrals, '+aR.toFixed(1)+'% acceptance rate.';
+      i2b.textContent = 'Watch'; i2.innerHTML = '<strong>Phillips & Associates</strong> takes the most volume in this practice area.';
+      i3.innerHTML = 'Acceptance-to-paid is <strong>'+pR.toFixed(1)+'%</strong>.';
+    } else {
+      i1b.textContent = 'Bright spot'; i1.innerHTML = '<strong>Filipattos</strong> converts 41.7% of referrals &mdash; 12&times; the firm average.';
+      i2b.textContent = 'Watch'; i2.innerHTML = '<strong>Phillips & Associates</strong> takes 30% of volume, converts '+(p.ref[0]>0?(p.acc[0]/p.ref[0]*100):0).toFixed(1)+'%. Great for fees ('+fmtMoneyShort(p.fees[0])+').';
+      i3.innerHTML = 'Acceptance-to-paid is <strong>'+pR.toFixed(1)+'%</strong> &mdash; most accepted referrals never close.';
+    }
+  }
+  function renderAll() {
+    const s = getFilteredData();
+    const view = document.querySelector('.view.active').dataset.view;
+    renderPipelineMeta(s); renderDashboardMeta(s); renderPerformanceMeta(s);
+    if (view === 'pipeline') {
+      const pq = s.pipe;
+      const hbl = colorAt => ({ anchor:'end', align:'start', color:ctx=>{const c=typeof colorAt==='function'?colorAt(ctx):colorAt; return c===W.warning||c===W.gold?W.charcoal:'#FFFFFF';}, font:{family:'Inter',weight:700,size:11}, formatter:fmtDefault, clip:false });
+      make('pipe-partner-chart','bar',{ labels:pq.partnerLabels, datasets:[{ label:'Intakes in queue', data:pq.partnerData, backgroundColor:pq.partnerData.map(v=>v>100?W.crimson:v>20?W.warning:W.black), borderRadius:2, borderSkipped:false }] }, { indexAxis:'y', plugins:{...baseOpts.plugins, legend:{display:false}, datalabels:hbl(ctx=>ctx.dataset.backgroundColor[ctx.dataIndex])} });
+      make('pipe-attorney-chart','bar',{ labels:pq.attorneyLabels, datasets:[{ label:'Intakes in queue', data:pq.attorneyData, backgroundColor:W.charcoal, borderRadius:2, borderSkipped:false }] }, { indexAxis:'y', plugins:{...baseOpts.plugins, legend:{display:false}, datalabels:hbl(W.charcoal)} });
+    }
+    if (view === 'dashboard') {
+      const d = s.dash;
+      const dl = { color:'#FFFFFF', font:{family:'Inter',weight:700,size:12}, formatter:(v,ctx)=>{ const t = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+(Number(b)||0),0); if (!t || (v/t)<0.05) return ''; return Number(v).toLocaleString(); } };
+      const cbl = (fmt=fmtDefault) => ({ anchor:'end', align:'top', color:W.charcoal, font:{family:'Inter',weight:700,size:10}, formatter:fmt, clip:false });
+      const fbl = { anchor:'end', align:'top', color:W.charcoal, font:{family:'Inter',weight:700,size:11}, formatter:fmtCurrency, clip:false };
+      const donut = data => ({ labels:firms, datasets:[{ data, backgroundColor:palette, borderWidth:1, borderColor:'white' }] });
+      make('snap-1','doughnut',donut(d.ref),{scales:{},plugins:{...baseOpts.plugins, datalabels:dl}});
+      make('snap-2','doughnut',donut(d.acc),{scales:{},plugins:{...baseOpts.plugins, datalabels:dl}});
+      make('snap-3','bar',{labels:firms,datasets:[{label:'Paid',data:d.paid,backgroundColor:W.success,borderRadius:2,borderSkipped:false}]});
+      make('snap-4','bar',{labels:firms,datasets:[{label:'Fees',data:d.fees,backgroundColor:W.gold,borderRadius:2,borderSkipped:false}]},{ scales:{...baseOpts.scales, y:{...baseOpts.scales.y, ticks:{...baseOpts.scales.y.ticks, callback:v=>'$'+(v/1000)+'K'}}}, plugins:{...baseOpts.plugins, datalabels:fbl} });
+      const cmp = (c,p) => ({ labels:firms, datasets:[{label:'Current',data:c,backgroundColor:W.black,borderRadius:2,borderSkipped:false},{label:'Prior',data:p,backgroundColor:W.midgray,borderRadius:2,borderSkipped:false}] });
+      make('comp-1','bar',cmp(d.ref,d.refP),{plugins:{...baseOpts.plugins, datalabels:cbl(fmtDefault)}});
+      make('comp-2','bar',cmp(d.acc,d.accP),{plugins:{...baseOpts.plugins, datalabels:cbl(fmtDefault)}});
+      make('comp-3','bar',cmp(d.fees,d.feesP),{ scales:{...baseOpts.scales, y:{...baseOpts.scales.y, ticks:{...baseOpts.scales.y.ticks, callback:v=>'$'+(v/1000)+'K'}}}, plugins:{...baseOpts.plugins, datalabels:cbl(fmtCurrency)} });
+      make('comp-4','bar',cmp(d.paid,d.paidP),{plugins:{...baseOpts.plugins, datalabels:cbl(fmtDefault)}});
+      spark('spark-1',d.refMonthly,W.black);
+      spark('spark-2',d.accMonthly,W.charcoal);
+      spark('spark-3',d.paidMonthly,W.success);
+      spark('spark-4',d.feesMonthly.map(v=>v/1000),W.gold);
+      make('trend-line','line',{ labels:months, datasets:[
+        { label:'Referred', data:d.refMonthly, borderColor:W.black, backgroundColor:W.black+'11', tension:0.3, fill:true, borderWidth:2 },
+        { label:'Accepted (×10)', data:d.accMonthly.map(v=>v*10), borderColor:W.charcoal, tension:0.3, borderDash:[4,4], borderWidth:2 },
+        { label:'Paid (×40)', data:d.paidMonthly.map(v=>v*40), borderColor:W.gold, tension:0.3, borderDash:[2,2], borderWidth:2 }
+      ]}, { plugins:{...baseOpts.plugins, datalabels:{display:false}} });
+      make('trend-stack','bar',{ labels:months, datasets:firms.map((fname,i)=>({ label:fname, data:months.map((_,m)=>Math.max(0, Math.round(d.ref[i]/12 + (Math.sin(m+i)*5)))), backgroundColor:palette[i], stack:'a' })) }, { scales:{x:{...baseOpts.scales.x, stacked:true}, y:{...baseOpts.scales.y, stacked:true}}, plugins:{...baseOpts.plugins, datalabels:{display:false}} });
+    }
+    if (view === 'performance') {
+      const p = s.perf, f = s.f;
+      const bd = firms.map((fname,i)=>({ x:p.ref[i], y:p.ref[i]===0?0:(p.acc[i]/p.ref[i])*100, r:6+Math.sqrt(Math.max(0,p.fees[i])/1000)*1.4 }));
+      bd.push({ x:Math.round(12*p.mul), y:41.7, r:8 });
+      const bl = [...firms,'Filipattos'];
+      const sel = f.perfFirm !== 'All firms' ? firms.indexOf(f.perfFirm) : -1;
+      make('perf-bubble','bubble',{ datasets:bl.map((label,i)=>{ const isF=i===bl.length-1; const isS=sel>=0&&i===sel; const dim=sel>=0&&!isS&&!isF; const bc=isF?W.gold:palette[i%palette.length]; return { label, data:[bd[i]], backgroundColor:dim?bc+'22':(isF?W.gold:bc+'CC'), borderColor:dim?bc+'55':(isF?W.goldDark:bc), borderWidth:isS?3:2 }; }) }, {
+        plugins:{ legend:{position:'right', labels:{font:{family:'Inter',size:11}, boxWidth:12, color:W.charcoal}}, tooltip:{...baseOpts.plugins.tooltip, callbacks:{label:ctx=>ctx.dataset.label+': '+ctx.raw.x+' sent, '+ctx.raw.y.toFixed(1)+'% accepted'}}, datalabels:{ anchor:'end', align:'top', offset:4, color:W.charcoal, font:{family:'Inter',weight:600,size:10}, formatter:(_v,ctx)=>ctx.dataset.label, clip:false } },
+        scales:{ x:{title:{display:true,text:'Volume sent',color:W.gray,font:{family:'Inter',size:11}}, beginAtZero:true, grid:{display:false}, border:{color:W.lightgray}, ticks:{color:W.gray}}, y:{title:{display:true,text:'Acceptance %',color:W.gray,font:{family:'Inter',size:11}}, beginAtZero:true, grid:{display:false}, border:{color:W.lightgray}, ticks:{callback:v=>v+'%', color:W.gray}} }
+      });
+      const baseDays = [22,35,0,18,28,14,30,24];
+      const days = baseDays.map((v,i)=>(sel>=0 && i!==sel)?0:v);
+      make('perf-time','bar',{labels:firms, datasets:[{label:'Avg days', data:days, backgroundColor:firms.map((_,i)=>(sel>=0&&i===sel)?W.gold:W.charcoal), borderRadius:2, borderSkipped:false}]}, { scales:{...baseOpts.scales, y:{...baseOpts.scales.y, ticks:{...baseOpts.scales.y.ticks, callback:v=>v+'d'}}}, plugins:{...baseOpts.plugins, datalabels:{...baseOpts.plugins.datalabels, formatter:fmtDays}} });
+      const fpa = firms.map((fname,i)=>p.acc[i]>0?p.fees[i]/p.acc[i]:0);
+      make('perf-fee','bar',{labels:firms, datasets:[{label:'Fee per accepted', data:fpa, backgroundColor:firms.map((_,i)=>(sel>=0&&i===sel)?W.goldDark:W.gold), borderRadius:2, borderSkipped:false}]}, { scales:{...baseOpts.scales, y:{...baseOpts.scales.y, ticks:{...baseOpts.scales.y.ticks, callback:v=>'$'+(v/1000).toFixed(1)+'K'}}}, plugins:{...baseOpts.plugins, datalabels:{...baseOpts.plugins.datalabels, formatter:fmtCurrency}} });
+    }
+  }
+  const drawer = document.getElementById('drawer'), scrim = document.getElementById('scrim');
+  function openDrawer(row) {
+    if (!row) return;
+    const id = row.dataset.id || 'INT-XXXX';
+    const lead = row.dataset.lead || row.cells[1]?.textContent || '—';
+    document.getElementById('drawer-title').textContent = lead;
+    document.getElementById('drawer-id').innerHTML = id+' <a href="#" onclick="event.preventDefault(); showToast(\'Salesforce\',\'Would open '+id+' in Salesforce.\');">Open in Salesforce</a>';
+    document.querySelector('[data-k="partner"]').textContent = row.dataset.partner || '—';
+    document.querySelector('[data-k="attorney"]').textContent = row.dataset.attorney || '—';
+    document.querySelector('[data-k="practice"]').textContent = row.dataset.practice || '—';
+    document.querySelector('[data-k="status"]').textContent = row.dataset.status || '—';
+    const days = row.dataset.days || '—';
+    document.querySelector('[data-k="days"]').textContent = days + (days !== '—' ? 'd' : '');
+    document.querySelector('[data-k="created"]').textContent = row.dataset.created || '—';
+    drawer.classList.add('open'); scrim.classList.add('open'); drawer.setAttribute('aria-hidden','false');
+    document.getElementById('drawer-close').focus();
+  }
+  function closeDrawer() { drawer.classList.remove('open'); scrim.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
+  document.getElementById('drawer-close').addEventListener('click', closeDrawer);
+  scrim.addEventListener('click', closeDrawer);
+  ['pending-decision-tbody','pending-email-tbody'].forEach(tbid => { const tb = document.getElementById(tbid); if (!tb) return; tb.addEventListener('click', e => { const tr = e.target.closest('tr'); if (!tr || !tr.dataset.id) return; openDrawer(tr); }); });
+  function showToast(label, body, ms=3400) {
+    const stack = document.getElementById('toast-stack');
+    const t = document.createElement('div'); t.className = 'toast';
+    t.innerHTML = '<div><div class="label">'+label+'</div><div class="body">'+body+'</div></div>';
+    stack.appendChild(t);
+    setTimeout(() => { t.style.transition = 'opacity .25s'; t.style.opacity = '0'; setTimeout(() => t.remove(), 280); }, ms);
+  }
+  function toggleShortcuts(force) { const o = document.getElementById('shortcut-overlay'); if (force === true) o.classList.add('open'); else if (force === false) o.classList.remove('open'); else o.classList.toggle('open'); }
+  document.getElementById('shortcut-overlay').addEventListener('click', e => { if (e.target.id === 'shortcut-overlay') toggleShortcuts(false); });
+  document.addEventListener('keydown', e => {
+    const inField = e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA');
+    if (e.key === 'Escape') { closeDrawer(); toggleShortcuts(false); document.querySelectorAll('.menu.open').forEach(m => m.classList.remove('open')); return; }
+    if (inField) return;
+    if (e.key === '1') switchView('pipeline');
+    else if (e.key === '2') switchView('dashboard');
+    else if (e.key === '3') switchView('performance');
+    else if (e.key === '/') { e.preventDefault(); const view = document.querySelector('.view.active').dataset.view; if (view === 'pipeline') document.getElementById('pipe-search')?.focus(); else showToast('Search','Search is available on the Pipeline view.'); }
+    else if (e.key === 'r' || e.key === 'R') { const view = document.querySelector('.view.active').dataset.view; resetView(view === 'pipeline' ? 'pipe' : view === 'dashboard' ? 'dash' : 'perf'); showToast('Reset','Filters reset on '+view+' view.'); }
+    else if (e.key === '?' || (e.shiftKey && e.key === '/')) { toggleShortcuts(); }
+  });
+  function bindMenu(bid, mid) {
+    const b = document.getElementById(bid), m = document.getElementById(mid);
+    if (!b || !m) return;
+    b.addEventListener('click', e => { e.stopPropagation(); const o = m.classList.contains('open'); document.querySelectorAll('.menu.open').forEach(x => x.classList.remove('open')); if (!o) { m.classList.add('open'); b.setAttribute('aria-expanded','true'); } else b.setAttribute('aria-expanded','false'); });
+  }
+  bindMenu('export-btn','export-menu'); bindMenu('saved-views-btn','saved-views-menu');
+  document.body.addEventListener('click', () => { document.querySelectorAll('.menu.open').forEach(m => { m.classList.remove('open'); const id = m.id.replace('-menu','-btn'); document.getElementById(id)?.setAttribute('aria-expanded','false'); }); });
+  document.querySelectorAll('#export-menu .menu-item').forEach(it => { it.addEventListener('click', e => { e.stopPropagation(); const t = it.dataset.export; if (t === 'print') window.print(); else showToast('Export queued','Export queued &mdash; feature requires backend integration. ('+t.toUpperCase()+')'); document.getElementById('export-menu').classList.remove('open'); }); });
+  const PRESETS = { 'my-queue':{pipePartner:'Jeanne Christensen',pipeDate:'Last 12 months'}, 'stale':{pipeStatus:'Pending Decision',pipeDate:'Last 12 months'}, 'this-week':{pipeDate:'Last 90 days'} };
+  function applyPreset(k) {
+    const cfg = PRESETS[k]; if (!cfg) return;
+    Object.entries(cfg).forEach(([key,v]) => { const id = key.replace(/([A-Z])/g,'-$1').toLowerCase(); const el = document.getElementById(id); if (el) for (let i=0;i<el.options.length;i++) if (el.options[i].text === v) {el.selectedIndex=i;break;} });
+    syncAllFilters('pipe'); renderAll();
+    showToast('Preset applied','Loaded preset: '+k.replace('-',' '));
+  }
+  document.querySelectorAll('#saved-views-menu .menu-item[data-preset]').forEach(it => { it.addEventListener('click', e => { e.stopPropagation(); applyPreset(it.dataset.preset); document.getElementById('saved-views-menu').classList.remove('open'); }); });
+  function savePresetPrompt() { const name = prompt('Save current filters as preset. Enter a name:'); if (!name) return; try { const all = JSON.parse(localStorage.getItem('wigdor.presets') || '{}'); all[name] = readFilters(); localStorage.setItem('wigdor.presets', JSON.stringify(all)); showToast('Preset saved','Saved as '+name+' (browser localStorage).'); } catch(e) { showToast('Save failed','Could not write preset to localStorage.'); } }
+  document.getElementById('save-current-view').addEventListener('click', e => { e.stopPropagation(); savePresetPrompt(); document.getElementById('saved-views-menu').classList.remove('open'); });
+  let liveMins = 0;
+  function updateLiveStamp() { document.getElementById('live-mins').textContent = liveMins; const text = liveMins === 0 ? 'just now' : (liveMins+' min ago'); ['pipeline','dashboard','performance'].forEach(v => { const el = document.getElementById('last-refreshed-'+v); if (el) el.textContent = text; }); }
+  updateLiveStamp(); setInterval(() => { liveMins = Math.min(liveMins+1, 30); updateLiveStamp(); }, 30000);
+  function applySkeletons() { document.querySelectorAll('.kpi .value, .lc-stage .lc-value, .funnel-stage .stage-value').forEach(el => el.classList.add('skel')); }
+  function clearSkeletons() { document.querySelectorAll('.skel').forEach(el => el.classList.remove('skel')); }
+  applySkeletons();
+  setTimeout(() => { clearSkeletons(); renderAll(); renderChips(); }, 320);
+  document.querySelectorAll('.lc-stage[data-stage]').forEach(stage => {
+    stage.addEventListener('click', () => { const st = stage.dataset.stage; const sel = document.getElementById('pipe-status'); if (sel) { for (let i=0;i<sel.options.length;i++) if (sel.options[i].text === st) {sel.selectedIndex=i;break;} renderChips(); renderAll(); showToast('Stage filter','Filtered to: '+st); } });
+    stage.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); stage.click(); } });
+  });
+  renderAll(); renderChips();
+</script>
 </body>
 </html>
